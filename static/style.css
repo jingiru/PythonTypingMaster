@@ -1,0 +1,113 @@
+/* 기본 스타일 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* 헤더 스타일 */
+  header {
+    margin-bottom: 20px;
+  }
+  
+  header h1 {
+    font-size: 2.5rem;
+    color: #4CAF50;
+  }
+  
+  /* 메인 컨테이너 */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  /* 연습 모드 선택 */
+  .mode-selection {
+    margin-bottom: 20px;
+  }
+  
+  .mode-selection h2 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .mode-selection button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .mode-selection button:hover {
+    background-color: #45a049;
+  }
+  
+  /* 타이핑 영역 스타일 */
+  .typing-area {
+    margin-top: 20px;
+  }
+  
+  .typing-area h2 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+  }
+  
+  #text-to-type {
+    font-size: 1.2rem;
+    background: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    white-space: pre-wrap; /* 코드 형식 유지를 위해 */
+  }
+  
+  #typing-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  #typing-input:focus {
+    border-color: #4CAF50;
+  }
+  
+  /* 통계 영역 스타일 */
+  .stats {
+    margin-top: 15px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .stats p {
+    margin: 5px 0;
+  }
+  
+  /* 푸터 스타일 */
+  footer {
+    margin-top: 20px;
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
