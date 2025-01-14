@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Typing Practice</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>Python Typing Practice</h1>
+  </header>
+
+  <main>
+    <!-- 연습 모드 선택 -->
+    <section class="mode-selection">
+      <h2>Select a Practice Mode</h2>
+      <button id="word-mode">Single Words</button>
+      <button id="phrase-mode">Phrases</button>
+      <button id="snippet-mode">Code Snippets</button>
+    </section>
+
+    <!-- 타이핑 연습 영역 -->
+    <section class="typing-area">
+      <h2>Type the Text Below:</h2>
+      <div id="text-to-type">print("Hello, World!")</div>
+      <input type="text" id="typing-input" placeholder="Start typing here...">
+      <div class="stats">
+        <p>Speed: <span id="speed">0</span> WPM</p>
+        <p>Accuracy: <span id="accuracy">0</span>%</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Python Typing Practice</p>
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
