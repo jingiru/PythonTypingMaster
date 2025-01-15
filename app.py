@@ -40,7 +40,7 @@ def is_valid_python_syntax(code):
 
     try:
         # 문맥이 필요한 키워드 처리
-        single_keywords = ['else:', 'elif:', 'except:', 'finally:', 'try:']
+        single_keywords = ['else:', 'elif:', 'except:', 'finally:']
         if code.strip() in single_keywords:
             # 기본 문맥을 추가하여 검사
             code = f"if True:\n    pass\n{code}\n    pass"
@@ -61,6 +61,9 @@ def is_valid_python_syntax(code):
             code = f"{code}\n    pass\n    except Exception:\n        pass"
         elif code.strip().startswith('while '):
             # while 루프의 경우 실행 가능한 블록 추가
+            code = f"{code}\n    pass"
+        elif code.strip().startswith('def func():'):
+            # def func():의 경우 실행 가능한 블록 추가
             code = f"{code}\n    pass"
 
         # AST를 통해 문법 검사

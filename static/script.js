@@ -3,6 +3,9 @@ const textToType = document.getElementById("text-to-type");
 const typingInput = document.getElementById("typing-input");
 const speedDisplay = document.getElementById("speed");
 const accuracyDisplay = document.getElementById("accuracy");
+const highScoreDisplay = document.getElementById("high-score");
+const resetHighScoreButton = document.getElementById("reset-high-score");
+const highScoreMessage = document.getElementById("high-score-message");
 
 // 타이핑 연습 텍스트
 typingTexts = [
@@ -26,9 +29,14 @@ typingTexts = [
     'if x > 0:',
     'while True:',
     'input("Enter a number: ")',
+    'input()',
+    'a=input()',
+    'pw = input()',
+    'ID = input()',
+    'print("피자","타코","파스타")',
     'import math',
     'a = [1, 2, 3]',
-    'b = {"key": "value"}',
+    'b = {"key":"value"}',
     'print(a[0])',
     'for i in range(1, 11):',
     'print(i ** 2)',
@@ -77,9 +85,18 @@ typingTexts = [
     'hex(255)',
     'oct(255)',
     'b = [4, 5, 6]',
-    'd = {"name": "John", "age": 30}',
+    'd = {"name":"John", "age":30}',
     'print(key, value)',
     '"Python"[::-1]',
+    'print(list_a[1])',
+    'print(a[1])',
+    'print(b[2])',
+    'a_list[-1]',
+    'print(a[1:4])',
+    'print(a[-5:-1])',
+    'print(all[:])',
+    'print(front[1:])',
+    'print(end[:9])',
     'len',
     'import random',
     'import os',
@@ -95,6 +112,21 @@ function playSound(type) {
 // 초기 상태 변수
 let currentText = "";
 let startTime = null;
+
+
+// 최고 기록 초기화 및 로드
+function loadHighScore() {
+    const highScore = localStorage.getItem("highScore") || 0;
+    highScoreDisplay.textContent = highScore;
+}
+
+function resetHighScore() {
+    localStorage.removeItem("highScore");
+    highScoreDisplay.textContent = 0;
+}
+
+resetHighScoreButton.addEventListener("click", resetHighScore);
+
 
 // 연습 텍스트 초기화
 function initializeText() {
@@ -136,10 +168,39 @@ async function validateCode(userInput) {
     }
 }
 
+
+
+// 최고 기록 갱신 알림 메시지 표시 함수
+function showHighScoreMessage() {
+    highScoreMessage.style.display = "inline";
+    highScoreMessage.style.animation = "fadeOut 2s ease-in-out forwards";
+
+    // 3초 후에 메시지 숨기기
+    setTimeout(() => {
+        highScoreMessage.style.display = "none";
+    }, 3000);
+}
+
+
+// 최고 기록 갱신 함수
+function updateHighScore(speed) {
+    const highScore = parseInt(localStorage.getItem("highScore"), 10) || 0;
+
+    if (speed > highScore) {
+        localStorage.setItem("highScore", speed);
+        highScoreDisplay.textContent = speed;
+        
+        // 알림 메시지 표시
+        showHighScoreMessage();
+    }
+}
+
+
 // 정답 처리
-function handleCorrect() {
+function handleCorrect(speed) {
     playSound("correct");
     typingInput.style.borderColor = "#4CAF50";
+    updateHighScore(speed); // 정답 시 최고 기록 갱신
     setTimeout(() => {
         initializeText();
         typingInput.focus();
@@ -175,7 +236,7 @@ typingInput.addEventListener("input", async () => {
         
         // 정답 체크
         if (validation.is_correct) {
-            handleCorrect();
+            handleCorrect(speed);
         }
     }, 100);
 });
@@ -197,3 +258,4 @@ typingInput.addEventListener("keydown", async (event) => {
 
 // 초기화
 initializeText();
+loadHighScore();

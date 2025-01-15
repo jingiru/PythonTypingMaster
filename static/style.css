@@ -86,19 +86,76 @@ main {
 
 
 
-/* 통계 영역 스타일 */
-.stats {
-  margin-top: 20px;
-  font-size: 1.2rem;
+/* 부모 컨테이너 */
+.stats-container {
   display: flex;
-  justify-content: space-between;
+  margin-top: 20px;
+  flex-direction: column;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  gap: 10px; /* 각 요소 간격 */
+}
+
+/* 통계 영역 */
+.stats {
+  display: flex;
+  justify-content: space-between; /* 입력 속도와 정확도 좌우 정렬 */
+  width: 100%; /* 전체 가로 폭 */
+  font-size: 1.2rem;
   color: #ffffff;
 }
 
 .stats p {
   margin: 0;
-  padding: 0 10px;
 }
+
+/* 최고 기록 영역 */
+.highScore {
+  display: flex;
+  align-items: center; /* 텍스트와 버튼 정렬 */
+  gap: 10px; /* 텍스트와 버튼 간격 */
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.highScore p {
+  margin: 0;
+}
+
+#reset-high-score {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#reset-high-score:hover {
+  background-color: #d32f2f;
+}
+
+
+/* 최고 기록 갱신 알림 메시지 스타일 */
+#high-score-message {
+  color: green;
+  font-weight: bold;
+  margin-left: 10px;
+  animation: fadeOut 1s ease-in-out forwards;
+}
+
+/* fadeOut 애니메이션 */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+
 
 /* 푸터 스타일 */
 footer {

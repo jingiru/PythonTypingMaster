@@ -13,14 +13,21 @@
   </header>
 
   <main>
-    <!-- 타이핑 연습 영역 -->
+  <!-- 타이핑 연습 영역 -->
     <section class="typing-area">
       <h2>Type the Text Below:</h2>
       <div id="text-to-type">print("Hello, World!")</div>
       <input type="text" id="typing-input" placeholder="Start typing here...">
-      <div class="stats">
-        <p>입력 속도: <span id="speed">0</span> CPM(분당 입력 글자 수 )</p>
-        <p>정확도: <span id="accuracy">0</span></p>
+      <div class="stats-container">
+        <div class="stats">
+          <p>입력 속도: <span id="speed">0</span> CPM(분당 입력 글자 수)</p>
+          <p>정확도: <span id="accuracy">0</span></p>
+        </div>
+        <div class="highScore">
+          <p>최고 기록: <span id="high-score">0</span> CPM</p>
+          <button id="reset-high-score">최고 기록 초기화</button>
+          <span id="high-score-message" style="display: none;">새로운 최고 기록입니다!</span>
+        </div>
       </div>
     </section>
   </main>
