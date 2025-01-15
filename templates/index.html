@@ -16,25 +16,26 @@
   <!-- 타이핑 연습 영역 -->
     <section class="typing-area">
       <h2>Type the Text Below:</h2>
-      <div id="text-to-type">print("Hello, World!")</div>
+      <div id="text-to-type"> </div>
       <input type="text" id="typing-input" placeholder="Start typing here...">
       <div class="stats-container">
         <div class="stats">
-          <p>입력 속도: <span id="speed">0</span> CPM(분당 입력 글자 수)</p>
-          <p>정확도: <span id="accuracy">0</span></p>
+          <p>Typing speed: <span id="speed">0</span> CPM(Characters Per Minute)</p>
+          <p>Accuracy: <span id="accuracy">0</span></p>
         </div>
         <div class="highScore">
-          <p>최고 기록: <span id="high-score">0</span> CPM</p>
-          <button id="reset-high-score">최고 기록 초기화</button>
-          <span id="high-score-message" style="display: none;">새로운 최고 기록입니다!</span>
+          <p>High Score: <span id="high-score">0</span> CPM</p>
+          <button id="reset-high-score">Reset High Score</button>
+          <span id="high-score-message" style="display: none;">New Record!</span>
         </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 진기루T</p>
-    <p>skyjjw79@hanmail.net </p>
+    <p>2025 JingiruT (Korean Informatics Teacher)</p>
+    <p>&copy; All rights reserved.</p>
+    <p>Contact: skyjjw79@hanmail.net</p>
   </footer>
 
   <script src="{{ url_for('static', filename='script.js') }}"></script>

@@ -138,7 +138,7 @@ main {
 
 /* 최고 기록 갱신 알림 메시지 스타일 */
 #high-score-message {
-  color: green;
+  color: yellow;
   font-weight: bold;
   margin-left: 10px;
   animation: fadeOut 1s ease-in-out forwards;
