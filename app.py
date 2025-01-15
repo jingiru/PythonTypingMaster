@@ -37,16 +37,40 @@ def is_valid_python_syntax(code):
     # 단순 키워드나 식별자인 경우
     if code.strip() in ['for', 'if', 'while', 'print', 'input', 'def', 'class', 'return']:
         return True
-        
+
     try:
-        # if 문의 경우 실행 가능한 형태로 만들어 검사
-        if code.strip().startswith('if'):
+        # 문맥이 필요한 키워드 처리
+        single_keywords = ['else:', 'elif:', 'except:', 'finally:', 'try:']
+        if code.strip() in single_keywords:
+            # 기본 문맥을 추가하여 검사
+            code = f"if True:\n    pass\n{code}\n    pass"
+        elif code.strip().startswith('if '):
+            # if 문의 경우 실행 가능한 형태로 만들어 검사
             code = f"{code}\n    pass"
-            
+        elif code.strip().startswith('elif '):
+            # elif 문도 if 문맥 추가
+            code = f"if True:\n    pass\n{code}\n    pass"
+        elif code.strip().startswith('for '):
+            # for 루프의 경우 실행 가능한 블록 추가
+            code = f"{code}\n    pass"
+        elif code.strip().startswith('try:'):
+            # try 구문의 경우 except 블록 추가
+            code = f"{code}\n    pass\nexcept Exception:\n    pass"
+        elif code.strip().startswith('def ') and 'try:' in code:
+            # 함수 정의와 try 결합 처리
+            code = f"{code}\n    pass\n    except Exception:\n        pass"
+        elif code.strip().startswith('while '):
+            # while 루프의 경우 실행 가능한 블록 추가
+            code = f"{code}\n    pass"
+
+        # AST를 통해 문법 검사
         ast.parse(code)
         return True
     except Exception:
         return False
+
+
+
 
 def calculate_char_accuracy(user_input, correct_code):
     """문자 단위 정확도 계산"""
@@ -88,12 +112,18 @@ def compare():
     is_equivalent = are_codes_equivalent(user_code, correct_code) if is_syntax_valid else False
     
     return jsonify({
-        "is_correct": is_equivalent and is_syntax_valid,
-        "is_syntax_valid": is_syntax_valid,
-        "accuracy": char_accuracy,
+    "is_correct": is_equivalent and is_syntax_valid,
+    "is_syntax_valid": is_syntax_valid,
+    "accuracy": char_accuracy,
+    "normalized_user": normalize_code(user_code),
+    "normalized_correct": normalize_code(correct_code),
+    "debug": {
+        "user_code": user_code,
+        "correct_code": correct_code,
         "normalized_user": normalize_code(user_code),
         "normalized_correct": normalize_code(correct_code)
-    })
+    }
+})
 
 if __name__ == '__main__':
     app.run(debug=True)
