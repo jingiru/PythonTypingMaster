@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Python Typing Practice</title>
-  <link rel="stylesheet" href="./static/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <header>
@@ -12,30 +12,23 @@
   </header>
 
   <main>
-    <!-- 연습 모드 선택 -->
-    <section class="mode-selection">
-      <h2>Select a Practice Mode</h2>
-      <button id="word-mode">Single Words</button>
-      <button id="phrase-mode">Phrases</button>
-      <button id="snippet-mode">Code Snippets</button>
-    </section>
-
     <!-- 타이핑 연습 영역 -->
     <section class="typing-area">
       <h2>Type the Text Below:</h2>
       <div id="text-to-type">print("Hello, World!")</div>
       <input type="text" id="typing-input" placeholder="Start typing here...">
       <div class="stats">
-        <p>Speed: <span id="speed">0</span> WPM</p>
-        <p>Accuracy: <span id="accuracy">0</span>%</p>
+        <p>입력 속도: <span id="speed">0</span> CPM(분당 입력 글자 수 )</p>
+        <p>정확도: <span id="accuracy">0</span>%</p>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>&copy; 2025 Python Typing Practice</p>
+    <p>&copy; 2025 진기루T</p>
+    <p>skyjjw79@hanmail.net </p>
   </footer>
 
-  <script src="/static/script.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

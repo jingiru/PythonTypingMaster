@@ -41,44 +41,15 @@ main {
   color: #ffffff;
 }
 
-/* 연습 모드 선택 */
-.mode-selection {
-  margin-bottom: 30px;
-}
-
-.mode-selection h2 {
-  margin-bottom: 20px;
-  font-size: 1.8rem;
-  font-weight: 600;
-}
-
-.mode-selection button {
-  background: linear-gradient(135deg, #ff7a18, #ffbe0b);
-  color: #ffffff;
-  border: none;
-  padding: 15px 25px;
-  margin: 10px;
-  border-radius: 30px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.mode-selection button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(255, 186, 0, 0.5);
-}
-
 /* 타이핑 영역 스타일 */
 .typing-area {
-  margin-top: 30px;
   text-align: left;
 }
 
 .typing-area h2 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-bottom: 10px;
+  font-weight: 600;
 }
 
 #text-to-type {
@@ -128,4 +99,5 @@ footer {
   margin-top: 40px;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
+  text-align: center; /* 텍스트 가운데 정렬 */
 }
