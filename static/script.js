@@ -71,7 +71,7 @@ function handleCorrect() {
   setTimeout(() => {
     initializeText(); // 새 텍스트로 초기화
     typingInput.focus();
-  }, 500); // 0.5초 후 이동
+  }, 50); // 0.05초 후 이동
 }
 
 // 오답 처리
@@ -89,9 +89,7 @@ typingInput.addEventListener("keydown", async (event) => {
     // 정확도 계산
     const { accuracy } = calculateStats(userInput);
 
-    if (accuracy === 100) {
-      handleCorrect();
-    } else {
+    if (accuracy != 100) {
       handleIncorrect();
     }
 
@@ -99,19 +97,6 @@ typingInput.addEventListener("keydown", async (event) => {
   }
 });
 
-// 제출 버튼 클릭 처리
-submitButton.addEventListener("click", () => {
-  const userInput = typingInput.value;
-
-  // 정확도 계산
-  const { accuracy } = calculateStats(userInput);
-
-  if (accuracy === 100) {
-    handleCorrect();
-  } else {
-    handleIncorrect();
-  }
-});
 
 // 입력 이벤트 처리
 typingInput.addEventListener("input", () => {
