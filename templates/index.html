@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Python Typing Practice</title>
@@ -8,7 +9,7 @@
 </head>
 <body>
   <header>
-    <h1>Python Typing Practice</h1>
+    <h1>Python Typing Master</h1>
   </header>
 
   <main>
@@ -16,7 +17,10 @@
     <section class="typing-area">
       <h2>Type the Text Below:</h2>
       <div id="text-to-type">print("Hello, World!")</div>
-      <input type="text" id="typing-input" placeholder="Start typing here...">
+      <section class="input-area">
+        <input type="text" id="typing-input" placeholder="Start typing here...">
+        <button id="submit-button">제출</button>
+      </section>
       <div class="stats">
         <p>입력 속도: <span id="speed">0</span> CPM(분당 입력 글자 수 )</p>
         <p>정확도: <span id="accuracy">0</span>%</p>

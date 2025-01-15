@@ -3,6 +3,7 @@ const textToType = document.getElementById("text-to-type");
 const typingInput = document.getElementById("typing-input");
 const speedDisplay = document.getElementById("speed");
 const accuracyDisplay = document.getElementById("accuracy");
+const submitButton = document.getElementById("submit-button"); // 제출 버튼
 
 // 타이핑 연습 텍스트
 const typingTexts = [
@@ -14,6 +15,12 @@ const typingTexts = [
   'if x > 0:',
   'input'
 ];
+
+// 소리 재생 함수
+function playSound(type) {
+  const audio = new Audio(type === "correct" ? "/static/correct.mp3" : "/static/incorrect.mp3");
+  audio.play();
+}
 
 // 초기 상태 변수
 let currentText = "";
@@ -50,11 +57,28 @@ function calculateStats(userInput) {
   }
 
   const elapsedTime = (new Date() - startTime) / 1000 / 60; // 분 단위
-  const speed = Math.round(correctCount / elapsedTime) || 0; // CPM 계산
+  const speed = Math.round(correctCount / elapsedTime) || 0;
   const accuracy = Math.round((correctCount / sanitizedCurrentText.length) * 100) || 0;
 
   updateStats(speed, accuracy);
   return { speed, accuracy };
+}
+
+// 정답 처리
+function handleCorrect() {
+  playSound("correct"); // 정답 소리 재생
+  typingInput.style.borderColor = "#4CAF50";
+  setTimeout(() => {
+    initializeText(); // 새 텍스트로 초기화
+    typingInput.focus();
+  }, 500); // 0.5초 후 이동
+}
+
+// 오답 처리
+function handleIncorrect() {
+  playSound("incorrect"); // 경고 소리 재생
+  typingInput.value = ""; // 입력창 초기화
+  typingInput.style.borderColor = "#FF4C4C"; // 빨간색 테두리 표시
 }
 
 // Enter 키 입력 처리
@@ -62,22 +86,30 @@ typingInput.addEventListener("keydown", async (event) => {
   if (event.key === "Enter") {
     const userInput = typingInput.value;
 
-    // 정확도 및 속도 계산
+    // 정확도 계산
     const { accuracy } = calculateStats(userInput);
 
     if (accuracy === 100) {
-      typingInput.disabled = true;
-      typingInput.style.borderColor = "#4CAF50"; // 올바른 입력
-      setTimeout(() => {
-        initializeText(); // 새 텍스트로 초기화
-        typingInput.disabled = false;
-        typingInput.focus();
-      }, 500); // 0.5초 대기 후 다음 텍스트로 이동
+      handleCorrect();
     } else {
-      typingInput.style.borderColor = "#FF4C4C"; // 잘못된 입력
+      handleIncorrect();
     }
 
     event.preventDefault(); // Enter 키 기본 동작 방지
+  }
+});
+
+// 제출 버튼 클릭 처리
+submitButton.addEventListener("click", () => {
+  const userInput = typingInput.value;
+
+  // 정확도 계산
+  const { accuracy } = calculateStats(userInput);
+
+  if (accuracy === 100) {
+    handleCorrect();
+  } else {
+    handleIncorrect();
   }
 });
 
@@ -86,7 +118,11 @@ typingInput.addEventListener("input", () => {
   if (!startTime) startTime = new Date();
 
   const userInput = typingInput.value;
-  calculateStats(userInput);
+  const { accuracy } = calculateStats(userInput);
+
+  if (accuracy === 100) {
+    handleCorrect();
+  }
 });
 
 // 초기화
