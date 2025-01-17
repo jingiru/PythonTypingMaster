@@ -4,6 +4,8 @@ import re
 
 app = Flask(__name__)
 
+application = app
+
 def normalize_code(code):
     """코드 정규화: Python 코드의 공백을 일관되게 처리"""
     # 1. 여러 공백을 하나로 통일
