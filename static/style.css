@@ -86,6 +86,67 @@ main {
 
 
 
+.level-buttons button {
+  padding: 8px 16px;  /* 크기 줄이기 */
+  font-size: 0.9rem;      /* 텍스트 크기 줄이기 */
+  margin-right: 5px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  box-sizing: border-box;
+}
+
+/* Lv0 (Beginner) 버튼 */
+#lv0 {
+  background-color: #9bcd4c; /* 세련된 초록색 */
+}
+
+#lv0:hover {
+  background-color: #89b23d;
+  transform: scale(1.05);
+}
+
+/* Lv1 (초보자용) 버튼 */
+#lv1 {
+  background-color: #3cb371; /* 세련된 초록색 */
+}
+
+#lv1:hover {
+  background-color: #32965d;
+  transform: scale(1.05);
+}
+
+/* Lv2 (중급자용) 버튼 */
+#lv2 {
+  background-color: #ff8c00; /* 세련된 주황색 */
+}
+
+#lv2:hover {
+  background-color: #e67800;
+  transform: scale(1.05);
+}
+
+/* Lv3 (고급자용) 버튼 */
+#lv3 {
+  background-color: #dc3545; /* 세련된 빨간색 */
+}
+
+#lv3:hover {
+  background-color: #b92f3c;
+  transform: scale(1.05);
+}
+
+
+
+
+
+
+
+
 /* 부모 컨테이너 */
 .stats-container {
   display: flex;

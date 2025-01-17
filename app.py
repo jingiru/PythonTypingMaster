@@ -38,7 +38,7 @@ def normalize_code(code):
 def is_valid_python_syntax(code):
     """Python 코드의 문법이 유효한지 검사"""
     # 단순 키워드나 식별자인 경우
-    if code.strip() in ['for', 'if', 'while', 'print', 'input', 'def', 'class', 'return']:
+    if code.strip() in ['for', 'if', 'else', 'while', 'print', 'input', 'def', 'class', 'return']:
         return True
 
     try:
