@@ -22,8 +22,8 @@ def normalize_code(code):
     # 4. 쉼표 다음에만 공백 유지
     code = re.sub(r'\s*,\s*', ', ', code)
     
-    # 5. 콜론 앞의 공백 제거
-    code = re.sub(r'\s*:', ':', code)
+    # 5. 콜론 앞뒤의 공백 제거 (release 250118 11:25)
+    code = re.sub(r'\s*:\s*', ':', code)
     
     # 6. 대괄호 주변 공백 제거
     code = re.sub(r'\s*\[\s*', '[', code)
