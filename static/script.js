@@ -172,7 +172,6 @@ const typingTexts = {
         'round(3.14159, 2)',
         'b = [4, 5, 6]',
         'print(key, value)',
-        'len',
         'import random',
         'import os',
         'int(input())'
@@ -200,7 +199,6 @@ const typingTexts = {
         'y = {4 ,5 ,6}',
         'a = {"key": "value"}',
         '"Hello" + " " + "World"',
-        'x = 10',
         'd = {"name":"John", "age":30}',
         'x = [0 for i in range(5)]',
         '"abc".replace("a", "z")',
@@ -214,7 +212,7 @@ const typingTexts = {
         'del a["key1"]',
         'x.append("orange")',
         'x.insert(1, "grape")',
-        'x.index(1)',
+        'x.index("a")',
         'x.remove("banana")'
     ]
 };
@@ -227,7 +225,7 @@ let currentLevel = "lv0"; // 기본 난이도
 // 페이지 로드 시, 기본 lv0 버튼에 border 추가
 window.addEventListener("load", () => {
     const lv0Button = document.getElementById("lv0");
-    lv0Button.style.border = "2px solid #FFD700"; // lv0 버튼에 기본 border 추가
+    lv0Button.style.border = "2.5px solid #FFD700"; // lv0 버튼에 기본 border 추가
     initializeText(); // 텍스트 초기화
 });
 
@@ -394,7 +392,7 @@ lvButtons.forEach(button => {
         
         // 버튼의 border 스타일 업데이트
         lvButtons.forEach(btn => btn.style.border = "none"); // 모든 버튼 border 제거
-        e.target.style.border = "2px solid #FFD700"; // 선택된 버튼에 border 추가
+        e.target.style.border = "2.5px solid #FFD700"; // 선택된 버튼에 border 추가
     });
 });
 
