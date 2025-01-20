@@ -65,8 +65,8 @@ def is_valid_python_syntax(code):
         elif code.strip().startswith('while '):
             # while 루프의 경우 실행 가능한 블록 추가
             code = f"{code}\n    pass"
-        elif code.strip().startswith('def func():'):
-            # def func():의 경우 실행 가능한 블록 추가
+        elif code.strip().startswith('def '):
+            # 모든 함수 정의에 대한 처리
             code = f"{code}\n    pass"
 
         # AST를 통해 문법 검사
