@@ -219,6 +219,7 @@ const typingTexts = {
 
 
 let currentLevel = "lv0"; // 기본 난이도
+let previousIndex = -1; // 이전에 선택된 인덱스를 저장할 변수
 
 
 
@@ -257,7 +258,12 @@ resetHighScoreButton.addEventListener("click", resetHighScore);
 
 // 연습 텍스트 초기화
 function initializeText() {
-    const randomIndex = Math.floor(Math.random() * typingTexts[currentLevel].length);
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * typingTexts[currentLevel].length);
+    } while (randomIndex === previousIndex); // 이전 인덱스와 같으면 다시 선택
+    
+    previousIndex = randomIndex; // 현재 인덱스를 저장
     currentText = typingTexts[currentLevel][randomIndex];
     textToType.textContent = currentText;
     typingInput.value = "";
