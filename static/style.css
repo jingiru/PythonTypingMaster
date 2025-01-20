@@ -63,6 +63,10 @@ main {
   white-space: pre-wrap;
   font-family: 'Courier New', monospace;
   color: #fffcf7;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 

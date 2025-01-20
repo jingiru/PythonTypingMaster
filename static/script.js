@@ -397,6 +397,34 @@ lvButtons.forEach(button => {
 });
 
 
+
+// 텍스트 선택 및 복사 방지를 위한 이벤트 리스너 추가
+textToType.addEventListener('copy', (e) => {
+    e.preventDefault();
+    return false;
+});
+
+textToType.addEventListener('selectstart', (e) => {
+    e.preventDefault();
+    return false;
+});
+
+textToType.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+});
+
+// 키보드 단축키로 복사하는 것을 방지
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'c' || e.key === 'C') {
+            e.preventDefault();
+            return false;
+        }
+    }
+});
+
+
 // 초기화
 initializeText();
 loadHighScore();
