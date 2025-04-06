@@ -123,7 +123,7 @@ const typingTexts = {
     "lv2": [
         'def add(a, b):',
         'return a + b',
-        'x = [1, 2, 3]',
+        'x = ["a", "b", "c"]',
         'for i in x:',
         'print(i[0])',
         'print(i[1])',
