@@ -24,6 +24,11 @@ const typingTexts = {
         'Hi',
         'Cat',
         'Dog',
+        'dh',
+        'donghwa',
+        'imun',
+        'im',
+        'val',
         'Algorithm',
         'print("hello","world!")',
         'print("hello")',
@@ -219,7 +224,35 @@ const typingTexts = {
         'x.insert(1, "grape")',
         'x.index("a")',
         'x.remove("banana")'
+    ],
+
+    "lv4": [
+        'print(s[::2] + s[1::2][::-1])',
+        '"".join(sorted(set("banana")))',
+        '"".join(["1" if i%2==0 else "0" for i in range(16)])',
+        '",".join([str(i) for i in range(10, 0, -2)])',
+        'zero = [0 for i in range(10)]',
+        'print([i for i in range(100) if str(i)==str(i)[::-1]])',
+        'print("짝수" if a%2==0 else "홀수")',
+        'print("홀수" if a%2!=0 else "짝수")',
+        'print("even" if num%2==0 else "odd")',
+        'print("합격" if score>=std else "불합격")',
+        'matrix = [[i*j for j in range(3)] for i in range(3)]',
+        'chars = list("extreme!")',
+        'var123 = list("!#@$#%$^%&^*&(*)")',
+        'user["pw"] = "admin34!@"[1::2]',
+        'info = {"name":"jin", "job":"teacher"}',
+        'mix = list(zip(["a","b"], [1,2], [True, False]))',
+        'col, row = input().split("-")',
+        'message = "Hello Python".replace(" ", "-")',
+        'nums = list(map(int, input().split(",")))',
+        'print("".join(sorted(set("mississippi"))))',
+        'colors = ["red", "green", "blue"]; colors.reverse()',
+        'result = [i for i in range(20) if i%2 and i%3]',
+        'output = "hello world".title().replace(" ", "_")',
+        'len([w for w in input().split() if w.isdigit()])'
     ]
+
 };
 
 
