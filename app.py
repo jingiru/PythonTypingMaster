@@ -257,23 +257,18 @@ def clear_all():
     return jsonify({"status": "cleared_all"})
 
 
-exam_start_time = None
-exam_duration = 600 
+exam_info = {"start_time": None, "duration": 0}
 
 @app.route("/start_exam", methods=["POST"])
 def start_exam():
-    global exam_start_time, exam_duration
     data = request.get_json()
-    exam_start_time = int(time.time())
-    exam_duration = int(data.get("duration", 600))
+    exam_info["start_time"] = int(time.time())
+    exam_info["duration"] = int(data["duration"])
     return '', 204
 
 @app.route("/exam_status")
 def exam_status():
-    return jsonify({
-        "start_time": exam_start_time,
-        "duration": exam_duration
-    })
+    return jsonify(exam_info)
 
 
 if __name__ == '__main__':
