@@ -220,18 +220,37 @@ main {
   margin: 0;
 }
 
-/* 최고 기록 영역 */
-.highScore {
+
+/* 점수 영역 */
+.score-line {
   display: flex;
-  align-items: center; /* 텍스트와 버튼 정렬 */
-  gap: 10px; /* 텍스트와 버튼 간격 */
+  align-items: center;
+  gap: 15px;
   font-size: 1.2rem;
   color: #ffffff;
+  flex-wrap: wrap; /* 줄 넘침 대비 */
 }
 
-.highScore p {
+.score-line p {
   margin: 0;
 }
+
+.score-line button {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.score-line button:hover {
+  background-color: #d32f2f;
+}
+
+
+
 
 #reset-high-score {
   padding: 5px 10px;

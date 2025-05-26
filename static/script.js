@@ -6,6 +6,9 @@ const accuracyDisplay = document.getElementById("accuracy");
 const highScoreDisplay = document.getElementById("high-score");
 const resetHighScoreButton = document.getElementById("reset-high-score");
 const highScoreMessage = document.getElementById("high-score-message");
+const currentScoreDisplay = document.getElementById("current-score");
+const averageScoreDisplay = document.getElementById("average-score");
+let scoreHistory = [];
 
 
 // 난이도 버튼들
@@ -289,6 +292,15 @@ function loadHighScore() {
 function resetHighScore() {
     localStorage.removeItem("highScore");
     highScoreDisplay.textContent = 0;
+
+    // 현재 및 평균 점수까지 초기화 (25.05.26 추가)
+    scoreHistory = [];
+    currentScoreDisplay.textContent = 0;
+    averageScoreDisplay.textContent = 0;
+
+    // 타이핑 속도 표시도 초기화
+    speedDisplay.textContent = 0;
+    accuracyDisplay.textContent = `0% (문법O)`;  // 명확하게 초기화
 }
 
 resetHighScoreButton.addEventListener("click", resetHighScore);
@@ -306,14 +318,28 @@ function initializeText() {
     textToType.textContent = currentText;
     typingInput.value = "";
     startTime = null;
-    updateStats(0, 0, true);
+    accuracyDisplay.textContent = `0% (문법O)`;  // 또는 원하는 초기 텍스트
+    typingInput.style.borderColor = ""; // 색 초기화
 }
 
 // 통계 업데이트 함수
 function updateStats(speed, accuracy, isSyntaxValid) {
+    // 기존 표시
     speedDisplay.textContent = speed;
     accuracyDisplay.textContent = `${accuracy}% (문법${isSyntaxValid ? 'O' : ' 오류O'})`;
+
+
+    // 평균 점수 표시 (25.05.26 추가)
+    if (speed > 0 && accuracy === 100 && isSyntaxValid) {
+        scoreHistory.push(speed);
+    }
+
+    const sum = scoreHistory.reduce((a, b) => a + b, 0);
+    const average = scoreHistory.length ? Math.round(sum / scoreHistory.length) : 0;
+    averageScoreDisplay.textContent = average;
 }
+
+
 
 // 서버에 코드 검증 요청
 async function validateCode(userInput) {
@@ -371,6 +397,10 @@ function updateHighScore(speed) {
 function handleCorrect(speed) {
     playSound("correct");
     typingInput.style.borderColor = "#4CAF50";
+
+    // 현재 점수 표시 (25.05.26 추가)
+    currentScoreDisplay.textContent = speed;
+
     updateHighScore(speed); // 정답 시 최고 기록 갱신
     setTimeout(() => {
         initializeText();
