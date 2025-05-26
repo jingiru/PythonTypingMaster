@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>수행평가 모드</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/webfontworld/d2coding/D2Coding.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='exam_style.css') }}">
+</head>
+<body>
+
+  <header>
+    <h1>수행평가 모드</h1>
+  </header>
+
+  <main>
+    <!-- 학번과 이름 입력 -->
+    <section class="typing-area">
+      <div class="student-info">
+        <label>학번: <input type="text" id="student-id" placeholder="예: 2999"></label>
+        <label>이름: <input type="text" id="student-name" placeholder="예: 진기루"></label>
+      </div>
+
+      <!-- 기존 타이핑 UI 복사 -->
+      <div class="level-buttons">
+        <button id="lv0">Lv0(Beginner)</button>
+        <button id="lv1">Lv1(Intermediate)</button>
+        <button id="lv2">Lv2(Advanced)</button>
+        <button id="lv3">Lv3(Expert)</button>
+        <button id="lv4">Lv4(Extreme)</button>
+      </div>
+      <h2>아래 코드를 정확하게 입력하세요:</h2>
+      <div id="text-to-type"> </div>
+      <input type="text" id="typing-input" placeholder="여기에 타이핑하세요...">
+
+      <div class="stats-container">
+        <div class="stats">
+          <p>Typing speed: <span id="speed">0</span> CPM</p>
+          <p>Accuracy: <span id="accuracy">0</span></p>
+        </div>
+        <div class="score-line">
+          <p>Current: <span id="current-score">0</span> CPM</p>
+          <p>Average: <span id="average-score">0</span> CPM</p>
+          <p>High: <span id="high-score">0</span> CPM</p>
+          <button id="reset-high-score">Reset</button>
+          <span id="high-score-message" style="display: none;">New Record!</span>
+        </div>
+        <div class="submit">
+          <button id="submit-score">제출</button>
+          <span id="submit-status" style="display:none;">제출 완료!</span>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 로그인 데이터 초기화 (다음 단계에서 활용 예정)
+    const studentIdInput = document.getElementById("student-id");
+    const studentNameInput = document.getElementById("student-name");
+  </script>
+
+  <script src="{{ url_for('static', filename='exam_script.js') }}"></script>
+</body>
+</html>

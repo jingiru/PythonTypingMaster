@@ -1,11 +1,16 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 import ast
 import os
 import re
+import csv
+import pandas as pd
+from datetime import datetime
 
 app = Flask(__name__)
 
 application = app
+SCORES_FILE = 'scores.csv'
+XLSX_FILE = 'scores.xlsx'
 
 def normalize_code(code):
     """코드 정규화: Python 코드의 공백을 일관되게 처리"""
@@ -130,6 +135,76 @@ def compare():
         "normalized_correct": normalize_code(correct_code)
     }
 })
+
+
+# --- 수행평가 영역 --- #
+
+
+@app.route('/exam')
+def typing_test():
+    return render_template('exam.html')
+
+SCORES_FILE = 'scores.csv'
+
+@app.route('/submit', methods=['POST'])
+def submit_score():
+    data = request.json
+    student_id = data.get('student_id')
+    name = data.get('name')
+    average_score = data.get('average_score')
+    high_score = data.get('high_score')
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # 기존 데이터를 모두 읽기
+    rows = []
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            rows = [row for row in reader if row[0] != student_id]
+
+    # 새로운 데이터 추가
+    rows.append([student_id, name, average_score, high_score, timestamp])
+
+    # 덮어쓰기
+    with open(SCORES_FILE, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerows(rows)
+
+    return jsonify({"status": "success"})
+
+
+
+
+# --- admin 영역 --- #
+
+@app.route('/admin')
+def admin():
+    scores = []
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            scores = list(reader)
+    return render_template('admin.html', scores=scores)
+
+
+@app.route('/download')
+def download_scores():
+    if not os.path.exists(SCORES_FILE):
+        return "제출된 데이터가 없습니다.", 404
+
+    df = pd.read_csv(SCORES_FILE, header=None,
+                     names=["학번", "이름", "최고 점수", "평균 점수", "제출 시간"])
+    df.to_excel(XLSX_FILE, index=False, sheet_name="수행평가 결과")
+
+    return send_file(XLSX_FILE, as_attachment=True)
+
+
+@app.route('/reset', methods=['POST'])
+def reset_scores():
+    open(SCORES_FILE, 'w', encoding='utf-8').close()  # 내용 비우기
+    return redirect(url_for('admin'))
+
+
 
 
 

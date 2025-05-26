@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="1">  <!-- 10초마다 새로고침 -->
+  <title>제출 결과 (교사용)</title>
+  <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      background-color: white;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #reset-btn {
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    #reset-btn:hover {
+      background-color: #c62828;
+    }
+
+    #download-btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #download-btn:hover {
+      background-color: #388E3C;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>제출된 수행평가 결과</h1>
+  <!-- 버튼 2개 배치 -->
+  <div style="margin-bottom: 20px;">
+    <form action="/download" method="get" style="display: inline;">
+      <button id="download-btn" type="submit">엑셀 다운로드</button>
+    </form>
+    <form action="/reset" method="post" style="display: inline;">
+      <button id="reset-btn" type="submit">제출 결과 초기화</button>
+    </form>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>학번</th>
+        <th>이름</th>
+        <th>평균 점수</th>
+        <th>최고 점수</th>
+        <th>제출 시간</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in scores %}
+      <tr>
+        <td>{{ s[0] }}</td>
+        <td>{{ s[1] }}</td>
+        <td>{{ s[2] }}</td>
+        <td>{{ s[3] }}</td>
+        <td>{{ s[4] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

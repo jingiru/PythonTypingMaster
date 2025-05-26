@@ -410,14 +410,6 @@ let validationTimeout = null;
 // 입력 이벤트 처리
 typingInput.addEventListener("input", async () => {
     if (!startTime) startTime = new Date();
-
-    const userInput = typingInput.value;
-
-    // 🥚 이스터에그: 수행평가 입력 시 전환
-    if (userInput.trim() === "수행평가") {
-        window.location.href = "/exam";
-        return;
-    }
     
     if (validationTimeout) {
         clearTimeout(validationTimeout);
@@ -508,6 +500,56 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+const submitButton = document.getElementById("submit-score");
+const submitStatus = document.getElementById("submit-status");
+
+submitButton.addEventListener("click", async () => {
+    const studentId = document.getElementById("student-id").value.trim();
+    const studentName = document.getElementById("student-name").value.trim();
+    const highScore = parseInt(document.getElementById("high-score").textContent);
+    const averageScore = parseInt(document.getElementById("average-score").textContent);
+
+    if (!studentId || !studentName) {
+        alert("학번과 이름을 모두 입력해 주세요.");
+        return;
+    }
+
+    try {
+        const response = await fetch("/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                student_id: studentId,
+                name: studentName,
+                high_score: highScore,
+                average_score: averageScore
+            })
+        });
+
+        if (response.ok) {
+            submitStatus.textContent = "제출 완료!";
+            submitStatus.style.display = "inline";
+            submitStatus.style.animation = "fadeOut 2s ease-in-out forwards";
+
+            // 3초 후에 메시지 숨기기 및 초기화
+            setTimeout(() => {
+                submitStatus.style.display = "none";
+                submitStatus.style.animation = "";
+            }, 3000);
+        } else {
+            submitStatus.style.display = "inline";
+            submitStatus.textContent = "제출 실패...";
+        }
+    } catch (error) {
+        console.error("제출 중 오류 발생:", error);
+        submitStatus.style.display = "inline";
+        submitStatus.textContent = "제출 오류!";
+    }
+});
+
+
+
 
 
 // 초기화

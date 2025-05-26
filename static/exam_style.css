@@ -1,0 +1,340 @@
+/* 기본 스타일 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans', 'Roboto', sans-serif; /* 글씨체 변경 */
+  background: linear-gradient(135deg, #6d83f2, #c069ff);
+  color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 헤더 스타일 */
+header {
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-family: 'Poppins', sans-serif; /* 제목에 어울리는 폰트 */
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.update-banner {
+  width: 100%;
+  overflow: hidden;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.scrolling-text {
+  position: absolute;
+  white-space: nowrap;
+  color: #ffeb3b;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: scroll-left 15s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+
+/* 메인 컨테이너 */
+main {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  color: #ffffff;
+}
+
+.student-info {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+}
+
+.student-info input {
+  margin-left: 10px;
+  margin-right: 20px;
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 150px;
+}
+
+
+/* 타이핑 영역 스타일 */
+.typing-area {
+  text-align: left;
+}
+
+.typing-area h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+#text-to-type {
+  font-family: 'D2Coding', monospace;
+  letter-spacing: 0.05em;  /* 자간 설정 */
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  color: #fffcf7;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+
+#typing-input {
+  font-family: 'D2Coding', monospace;
+  letter-spacing: 0.09em;  /* 자간 설정 */
+  font-weight: bold;
+  width: 100%; /* 입력창이 부모 요소의 너비를 꽉 채우도록 설정 */
+  padding: 15px;
+  font-size: 1.4rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box; /* 패딩이 전체 크기에 포함되도록 설정 */
+}
+
+#typing-input:focus {
+  border-color: #ffbe0b;
+  box-shadow: 0 4px 10px rgba(255, 186, 0, 0.4);
+}
+
+
+
+.level-buttons button {
+  padding: 8px 15px;  /* 크기 줄이기 */
+  font-size: 0.9rem;      /* 텍스트 크기 줄이기 */
+  margin-right: 5px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  box-sizing: border-box;
+}
+
+/* Lv0 (Beginner) 버튼 */
+#lv0 {
+  background-color: #9bcd4c; /* 세련된 초록색 */
+}
+
+#lv0:hover {
+  background-color: #89b23d;
+  transform: scale(1.05);
+}
+
+/* Lv1 (초보자용) 버튼 */
+#lv1 {
+  background-color: #3cb371; /* 세련된 초록색 */
+}
+
+#lv1:hover {
+  background-color: #32965d;
+  transform: scale(1.05);
+}
+
+/* Lv2 (중급자용) 버튼 */
+#lv2 {
+  background-color: #ff8c00; /* 세련된 주황색 */
+}
+
+#lv2:hover {
+  background-color: #e67800;
+  transform: scale(1.05);
+}
+
+/* Lv3 (고급자용) 버튼 */
+#lv3 {
+  background-color: #dc3545; /* 세련된 빨간색 */
+}
+
+#lv3:hover {
+  background-color: #b92f3c;
+  transform: scale(1.05);
+}
+
+/* Lv4 (익스트림용) 버튼 */
+#lv4 {
+  background-color: #8e24aa; /* 세련된 빨간색 */
+}
+
+#lv4:hover {
+  background-color: #6a1b9a;
+  transform: scale(1.05);
+}
+
+
+
+
+
+
+
+
+/* 부모 컨테이너 */
+.stats-container {
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+  align-items: flex-start; /* 왼쪽 정렬 */
+  gap: 10px; /* 각 요소 간격 */
+}
+
+/* 통계 영역 */
+.stats {
+  display: flex;
+  justify-content: space-between; /* 입력 속도와 정확도 좌우 정렬 */
+  width: 100%; /* 전체 가로 폭 */
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.stats p {
+  margin: 0;
+}
+
+
+/* 점수 영역 */
+.score-line {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  flex-wrap: wrap; /* 줄 넘침 대비 */
+}
+
+.score-line p {
+  margin: 0;
+}
+
+.score-line button {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.score-line button:hover {
+  background-color: #d32f2f;
+}
+
+
+
+
+#reset-high-score {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#reset-high-score:hover {
+  background-color: #d32f2f;
+}
+
+
+/* 최고 기록 갱신 알림 메시지 스타일 */
+#high-score-message {
+  color: yellow;
+  font-weight: bold;
+  margin-left: 10px;
+  animation: fadeOut 1s ease-in-out forwards;
+}
+
+
+/* fadeOut 애니메이션 */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+#submit-score {
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#submit-score:hover {
+  background-color: #1976D2;
+  transform: scale(1.05);
+}
+
+#submit-status {
+  color: #4ef3fc;
+  font-weight: bold;
+  font-size: 16px;
+  margin-left: 12px;
+  animation: fadeOut 2s ease-in-out forwards;
+}
+
+
+
+/* 푸터 스타일 */
+footer {
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center; /* 텍스트 가운데 정렬 */
+}
