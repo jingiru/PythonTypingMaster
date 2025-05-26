@@ -494,7 +494,7 @@ textToType.addEventListener('contextmenu', (e) => {
 // 키보드 단축키로 복사하는 것을 방지
 document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'c' || e.key === 'C') {
+        if (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V') {
             e.preventDefault();
             return false;
         }
