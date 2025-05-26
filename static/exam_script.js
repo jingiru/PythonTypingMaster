@@ -509,6 +509,7 @@ submitButton.addEventListener("click", async () => {
     const studentName = document.getElementById("student-name").value.trim();
     const highScore = parseInt(document.getElementById("high-score").textContent);
     const averageScore = parseInt(document.getElementById("average-score").textContent);
+    const currentLevelShort = currentLevel; 
 
     if (!studentId || !studentName) {
         alert("학번과 이름을 모두 입력해 주세요.");
@@ -522,8 +523,9 @@ submitButton.addEventListener("click", async () => {
             body: JSON.stringify({
                 student_id: studentId,
                 name: studentName,
-                high_score: highScore,
-                average_score: averageScore
+                level: currentLevelShort, 
+                average_score: averageScore,
+                high_score: highScore
             })
         });
 

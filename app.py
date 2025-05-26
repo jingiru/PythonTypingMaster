@@ -151,6 +151,7 @@ def submit_score():
     data = request.json
     student_id = data.get('student_id')
     name = data.get('name')
+    level = data.get('level')  
     average_score = data.get('average_score')
     high_score = data.get('high_score')
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -163,7 +164,7 @@ def submit_score():
             rows = [row for row in reader if row[0] != student_id]
 
     # 새로운 데이터 추가
-    rows.append([student_id, name, average_score, high_score, timestamp])
+    rows.append([student_id, name, level, average_score, high_score, timestamp])
 
     # 덮어쓰기
     with open(SCORES_FILE, 'w', newline='', encoding='utf-8') as f:
