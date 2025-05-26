@@ -413,6 +413,13 @@ typingInput.addEventListener("input", async () => {
 
     const userInput = typingInput.value;
 
+    if (/\s{3,}/.test(userInput)) {
+        updateStats(0, 0, false);
+        typingInput.style.borderColor = "#FF4C4C";
+        accuracyDisplay.textContent = "부정 입력(무한 스페이스바) 감지";
+        return;
+    }
+
     // 🥚 이스터에그: 수행평가 입력 시 전환
     if (userInput.trim() === "수행평가") {
         window.location.href = "/exam";
@@ -424,7 +431,6 @@ typingInput.addEventListener("input", async () => {
     }
     
     validationTimeout = setTimeout(async () => {
-        const userInput = typingInput.value;
         const validation = await validateCode(userInput);
         
         const elapsedTime = (new Date() - startTime) / 1000 / 60;

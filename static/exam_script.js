@@ -409,6 +409,15 @@ let validationTimeout = null;
 
 // 입력 이벤트 처리
 typingInput.addEventListener("input", async () => {
+    const userInput = typingInput.value;
+
+    if (/\s{3,}/.test(userInput)) {
+        updateStats(0, 0, false);
+        typingInput.style.borderColor = "#FF4C4C";
+        accuracyDisplay.textContent = "부정 입력(무한 스페이스바) 감지";
+        return;
+    }
+
     if (!startTime) startTime = new Date();
     
     if (validationTimeout) {
@@ -416,7 +425,6 @@ typingInput.addEventListener("input", async () => {
     }
     
     validationTimeout = setTimeout(async () => {
-        const userInput = typingInput.value;
         const validation = await validateCode(userInput);
         
         const elapsedTime = (new Date() - startTime) / 1000 / 60;
