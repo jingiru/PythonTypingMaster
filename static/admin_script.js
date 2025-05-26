@@ -32,7 +32,7 @@ function updateToggleButtonUI() {
     toggleBtn.textContent = "실시간 보기 OFF";
     toggleBtn.style.backgroundColor = "gray";
     toggleBtn.style.color = "white";
-    startAutoRefresh(30);
+    startAutoRefresh(100);
   }
 }
 
@@ -76,3 +76,28 @@ function clearAll() {
     if (res.ok) location.reload();
   });
 }
+
+document.getElementById("start-exam-btn").addEventListener("click", () => {
+  const durationInput = parseFloat(document.getElementById("exam-duration").value);
+
+  if (isNaN(durationInput) || durationInput <= 0) {
+    alert("시험 시간을 0.5분(30초) 이상 입력해 주세요.");
+    return;
+  }
+
+  const minutes = Math.floor(durationInput);
+  const seconds = (durationInput % 1) === 0.5 ? 30 : 0;
+  const totalSeconds = minutes * 60 + seconds;
+
+  fetch("/start_exam", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ duration: totalSeconds })
+  }).then(res => {
+    if (res.ok) {
+      alert(`시험이 시작되었습니다! (${minutes}분 ${seconds}초)`);
+    } else {
+      alert("시험 시작 실패!");
+    }
+  });
+});

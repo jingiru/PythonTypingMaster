@@ -62,7 +62,7 @@ button {
 input[type="text"] {
   height: 40px;
   font-size: 1rem;
-  padding: 0px 10px;
+  padding: 0px 6px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
@@ -88,3 +88,26 @@ input[type="text"] {
   background-color: #b71c1c;
 }
 
+input[type="number"] {
+  height: 40px;
+  font-size: 1rem;
+  padding: 0px 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+#start-exam-btn {
+  background-color: #ffca28;
+  color: #333;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#start-exam-btn:hover {
+  background-color: #fbc02d;
+  transform: scale(1.05);
+}

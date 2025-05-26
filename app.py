@@ -3,6 +3,7 @@ import ast
 import os
 import re
 import csv
+import time
 import pandas as pd
 from datetime import datetime
 
@@ -202,7 +203,7 @@ def download_scores():
         return "제출된 데이터가 없습니다.", 404
 
     df = pd.read_csv(SCORES_FILE, header=None,
-                     names=["학번", "이름", "최고 점수", "평균 점수", "제출 시간"])
+                     names=["학번", "이름", "레벨", "최고 점수", "평균 점수", "제출 시간"])
     df.to_excel(XLSX_FILE, index=False, sheet_name="수행평가 결과")
 
     return send_file(XLSX_FILE, as_attachment=True)
@@ -255,6 +256,24 @@ def clear_all():
         os.remove(SCORES_FILE)
     return jsonify({"status": "cleared_all"})
 
+
+exam_start_time = None
+exam_duration = 600 
+
+@app.route("/start_exam", methods=["POST"])
+def start_exam():
+    global exam_start_time, exam_duration
+    data = request.get_json()
+    exam_start_time = int(time.time())
+    exam_duration = int(data.get("duration", 600))
+    return '', 204
+
+@app.route("/exam_status")
+def exam_status():
+    return jsonify({
+        "start_time": exam_start_time,
+        "duration": exam_duration
+    })
 
 
 if __name__ == '__main__':

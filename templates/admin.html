@@ -25,6 +25,11 @@
 
     <button id="preset-btn" onclick="presetIds()">학번 사전 지정</button>
     <button id="clear-btn" onclick="clearAll()">전체 화면 초기화</button>
+    <div style="margin-top: 10px;">
+      <label for="exam-duration">시험 시간 (분): </label>
+      <input type="number" id="exam-duration" step="0.5" value="10" min="0.5" style="width: 80px;">
+      <button id="start-exam-btn">⏱️ 시험 시작 </button>
+    </div>
   </div>
 
   <table>

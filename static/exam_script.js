@@ -501,6 +501,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+
+let isSubmitted = false;  // 수동 제출 여부
+
+
 const submitButton = document.getElementById("submit-score");
 const submitStatus = document.getElementById("submit-status");
 
@@ -533,6 +537,7 @@ submitButton.addEventListener("click", async () => {
             submitStatus.textContent = "제출 완료!";
             submitStatus.style.display = "inline";
             submitStatus.style.animation = "fadeOut 2s ease-in-out forwards";
+            isSubmitted = true;
 
             // 3초 후에 메시지 숨기기 및 초기화
             setTimeout(() => {
@@ -549,6 +554,60 @@ submitButton.addEventListener("click", async () => {
         submitStatus.textContent = "제출 오류!";
     }
 });
+
+
+let examStarted = false;
+let examEndTime = null;
+const countdownElement = document.createElement("div");
+countdownElement.style.fontSize = "1.4rem";
+countdownElement.style.fontWeight = "bold";
+document.querySelector(".stats-container").prepend(countdownElement);
+
+// 매초 서버 확인
+setInterval(async () => {
+  if (examStarted) return;
+
+  const res = await fetch("/exam_status");
+  const data = await res.json();
+
+  if (data.start_time) {
+    const now = Math.floor(Date.now() / 1000);
+    const end = data.start_time + data.duration;
+    examEndTime = end;
+    examStarted = true;
+    isSubmitted = false; // 시험이 시작되면 제출 여부 초기화
+    startCountdown();  // 타이머 시작
+  }
+}, 1000);
+
+function startCountdown() {
+  const interval = setInterval(() => {
+    const now = Math.floor(Date.now() / 1000);
+    const remaining = examEndTime - now;
+
+    if (remaining <= 0) {
+      clearInterval(interval);
+      autoSubmit();
+      return;
+    }
+
+    const min = Math.floor(remaining / 60);
+    const sec = remaining % 60;
+    countdownElement.textContent = `남은 시간: ${min}:${sec.toString().padStart(2, "0")}`;
+  }, 1000);
+}
+
+function autoSubmit() {
+  if (isSubmitted) {
+    console.log("이미 제출했으므로 자동 제출 생략");
+    return;
+  }
+
+  console.log("⏰ 시간 종료! 자동 제출 실행");
+  document.getElementById("submit-score").click();
+  isSubmitted = false;
+}
+
 
 
 
