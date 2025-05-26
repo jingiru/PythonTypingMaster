@@ -1,0 +1,90 @@
+/* admin_style.css */
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background: #f4f4f4;
+  padding: 40px;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: white;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+}
+
+th {
+  background-color: #2196F3;
+  color: white;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+button {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 1rem;
+  line-height: 40px;  /* 글자를 정확히 수직 중앙에 맞춤 */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#download-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#download-btn:hover {
+  background-color: #388E3C;
+}
+
+#reset-btn {
+  background-color: #ab47bc;
+  color: white;
+}
+
+#reset-btn:hover {
+  background-color: #8e24aa;
+}
+
+
+/* 학번 입력 필드 스타일 */
+input[type="text"] {
+  height: 40px;
+  font-size: 1rem;
+  padding: 0px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+
+/* 학번 사전 지정 버튼 (파랑) */
+#preset-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+#preset-btn:hover {
+  background-color: #1976D2;
+}
+
+/* 전체 초기화 버튼 (회색) */
+#clear-btn {
+  background-color: #d32f2f;
+  color: white;
+}
+
+#clear-btn:hover {
+  background-color: #b71c1c;
+}
+

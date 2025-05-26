@@ -151,27 +151,35 @@ def submit_score():
     data = request.json
     student_id = data.get('student_id')
     name = data.get('name')
-    level = data.get('level')  
+    level = data.get('level')
     average_score = data.get('average_score')
     high_score = data.get('high_score')
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # 기존 데이터를 모두 읽기
+    updated = False
     rows = []
+
     if os.path.exists(SCORES_FILE):
         with open(SCORES_FILE, newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
-            rows = [row for row in reader if row[0] != student_id]
+            for row in reader:
+                if row[0] == student_id:
+                    # 해당 학번이 이미 존재하면 갱신
+                    rows.append([student_id, name, level, average_score, high_score, timestamp])
+                    updated = True
+                else:
+                    rows.append(row)
 
-    # 새로운 데이터 추가
-    rows.append([student_id, name, level, average_score, high_score, timestamp])
+    if not updated:
+        # 기존에 학번이 없으면 새로 추가
+        rows.append([student_id, name, level, average_score, high_score, timestamp])
 
-    # 덮어쓰기
     with open(SCORES_FILE, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
 
     return jsonify({"status": "success"})
+
 
 
 
@@ -202,10 +210,50 @@ def download_scores():
 
 @app.route('/reset', methods=['POST'])
 def reset_scores():
-    open(SCORES_FILE, 'w', encoding='utf-8').close()  # 내용 비우기
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            rows = [[row[0], row[1], '', '', '', ''] for row in reader]
+
+        with open(SCORES_FILE, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerows(rows)
+
     return redirect(url_for('admin'))
 
 
+
+@app.route('/preset_ids', methods=['POST'])
+def preset_ids():
+    data = request.json
+    start_id = int(data['start_id'])
+    end_id = int(data['end_id'])
+
+    new_rows = []
+    if os.path.exists(SCORES_FILE):
+        with open(SCORES_FILE, newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            existing_rows = {row[0]: row for row in reader}
+    else:
+        existing_rows = {}
+
+    for student_id in range(start_id, end_id + 1):
+        sid = str(student_id)
+        if sid not in existing_rows:
+            new_rows.append([sid, "", "", "", "", ""])
+
+    with open(SCORES_FILE, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerows(new_rows)
+
+    return jsonify({"status": "preset_done"})
+
+
+@app.route('/clear_all', methods=['POST'])
+def clear_all():
+    if os.path.exists(SCORES_FILE):
+        os.remove(SCORES_FILE)
+    return jsonify({"status": "cleared_all"})
 
 
 

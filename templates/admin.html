@@ -2,78 +2,29 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="5">  <!-- 10초마다 새로고침 -->
   <title>제출 결과 (교사용)</title>
-  <style>
-    body {
-      font-family: 'Noto Sans', sans-serif;
-      background: #f4f4f4;
-      padding: 40px;
-      color: #333;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      background-color: white;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ccc;
-    }
-
-    th {
-      background-color: #2196F3;
-      color: white;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    #reset-btn {
-      padding: 10px 20px;
-      background-color: #f44336;
-      color: white;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-
-    #reset-btn:hover {
-      background-color: #c62828;
-    }
-
-    #download-btn {
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #download-btn:hover {
-      background-color: #388E3C;
-    }
-
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin_style.css') }}">
 </head>
 <body>
   <h1>제출된 수행평가 결과</h1>
-  <!-- 버튼 2개 배치 -->
-  <div style="margin-bottom: 20px;">
-    <form action="/download" method="get" style="display: inline;">
+
+  <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <button id="toggle-refresh-btn" style="background-color: gray; color: white; border: none; border-radius: 6px;">
+      실시간 보기 OFF
+    </button>
+    <form action="/download" method="get">
       <button id="download-btn" type="submit">엑셀 다운로드</button>
     </form>
-    <form action="/reset" method="post" style="display: inline;">
+
+    <form action="/reset" method="post">
       <button id="reset-btn" type="submit">제출 결과 초기화</button>
     </form>
+
+    <label>시작 학번: <input type="text" id="start-id" style="width: 80px;"></label>
+    <label>종료 학번: <input type="text" id="end-id" style="width: 80px;"></label>
+
+    <button id="preset-btn" onclick="presetIds()">학번 사전 지정</button>
+    <button id="clear-btn" onclick="clearAll()">전체 화면 초기화</button>
   </div>
 
   <table>
@@ -100,5 +51,7 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <script src="{{ url_for('static', filename='admin_script.js') }}"></script>
 </body>
 </html>
