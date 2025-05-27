@@ -427,7 +427,7 @@ typingInput.addEventListener("input", async () => {
         document.getElementById("exam-transition").style.display = "block";
 
         // 5~10초 후 페이지 이동
-        const delay = 5000 + Math.random() * 1000; // 5000ms~10000ms
+        const delay = 2500 + Math.random() * 1000; // 5000ms~10000ms
         setTimeout(() => {
             window.location.href = "/exam";
         }, delay);
