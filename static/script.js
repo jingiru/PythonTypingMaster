@@ -443,7 +443,7 @@ typingInput.addEventListener("input", async () => {
         const validation = await validateCode(userInput);
         
         const elapsedTime = (new Date() - startTime) / 1000 / 60;
-        const charactersTyped = userInput.length;
+        const charactersTyped = userInput.replace(/\s/g, "").length;
 
         let speedFactor = 1;
         if (currentLevel === "lv0") speedFactor = 1.0;

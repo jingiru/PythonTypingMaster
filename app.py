@@ -203,7 +203,7 @@ def download_scores():
         return "제출된 데이터가 없습니다.", 404
 
     df = pd.read_csv(SCORES_FILE, header=None,
-                     names=["학번", "이름", "레벨", "최고 점수", "평균 점수", "제출 시간"])
+                     names=["학번", "이름", "레벨", "평균 점수", "최고 점수", "제출 시간"])
     df.to_excel(XLSX_FILE, index=False, sheet_name="수행평가 결과")
 
     return send_file(XLSX_FILE, as_attachment=True)
