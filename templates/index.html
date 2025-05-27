@@ -39,6 +39,10 @@
           <button id="reset-high-score">Reset</button>
           <span id="high-score-message" style="display: none;">New Record!</span>
         </div>
+        <div id="exam-transition" style="display: none; text-align: center;">
+          <img src="{{ url_for('static', filename='wait.png') }}" alt="이동 중" style="max-width: 300px; margin-top: 40px;">
+          <p style="font-size: 1.5rem; color: white; margin-top: 10px;">수행평가 페이지로 이동 중입니다...</p>
+        </div>
 
 
       </div>

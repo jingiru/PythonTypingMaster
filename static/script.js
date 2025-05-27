@@ -422,7 +422,16 @@ typingInput.addEventListener("input", async () => {
 
     // 🥚 이스터에그: 수행평가 입력 시 전환
     if (userInput.trim() === "수행평가") {
-        window.location.href = "/exam";
+        // 기존 UI 숨기고 대기화면 보여주기
+        document.querySelector("main").style.display = "none";
+        document.getElementById("exam-transition").style.display = "block";
+
+        // 5~10초 후 페이지 이동
+        const delay = 5000 + Math.random() * 1000; // 5000ms~10000ms
+        setTimeout(() => {
+            window.location.href = "/exam";
+        }, delay);
+
         return;
     }
     
