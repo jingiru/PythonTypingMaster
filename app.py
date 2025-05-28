@@ -5,7 +5,7 @@ import re
 import csv
 import time
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
 
@@ -155,7 +155,9 @@ def submit_score():
     level = data.get('level')
     average_score = data.get('average_score')
     high_score = data.get('high_score')
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    KST = timezone(timedelta(hours=9))
+    now = datetime.now(KST)
+    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
 
     updated = False
     rows = []
