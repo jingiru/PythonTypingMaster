@@ -426,14 +426,28 @@ typingInput.addEventListener("input", async () => {
         document.querySelector("main").style.display = "none";
         document.getElementById("exam-transition").style.display = "block";
 
-        // 5~10초 후 페이지 이동
-        const delay = 2500 + Math.random() * 1000; // 5000ms~10000ms
+        // 타자 효과 텍스트
+        const fullText = "수행평가 페이지로 이동 중입니다...";
+        const typingTarget = document.getElementById("typing-effect");
+        let index = 0;
+
+        const typingInterval = setInterval(() => {
+            typingTarget.textContent += fullText[index++];
+            if (index >= fullText.length) {
+                clearInterval(typingInterval);
+            }
+        }, 100); // 글자당 100ms 간격
+
+        // 3초 후 페이지 이동
         setTimeout(() => {
+            clearInterval(typingInterval); // 혹시 모를 타이밍 정리
             window.location.href = "/exam";
-        }, delay);
+        }, 3000);
 
         return;
     }
+
+
     
     if (validationTimeout) {
         clearTimeout(validationTimeout);
