@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_file
 import ast
+import sys
 import os
 import re
 import csv
 import time
+import subprocess
+import uuid
 import pandas as pd
 from datetime import datetime, timedelta, timezone
 
@@ -271,6 +274,109 @@ def start_exam():
 @app.route("/exam_status")
 def exam_status():
     return jsonify(exam_info)
+
+
+# 문제 예시 (간단한 문제 1개만 우선 설정)
+sample_problem = {
+    "title": "1부터 N까지 합 구하기",
+    "description": "정수 N이 주어졌을 때 1부터 N까지의 합을 구하는 프로그램을 작성하세요.",
+    "input": "5",
+    "output": "15"
+}
+
+# 테스트케이스 (input, expected_output)
+test_cases = [
+    ("5", "15"),
+    ("1", "1"),
+    ("10", "55"),
+    ("100", "5050")
+]
+
+@app.route("/judge")
+def coding_judge():
+    return render_template("coding_judge.html")
+
+@app.route("/get_problem")
+def get_problem():
+    return jsonify(sample_problem)
+
+@app.route("/run_code", methods=["POST"])
+def run_code():
+    data = request.get_json()
+    code = data.get("code", "")
+    test_input = data.get("input", "")
+
+    file_id = uuid.uuid4().hex
+    code_file = f"temp_run_{file_id}.py"
+
+    with open(code_file, "w", encoding="utf-8") as f:
+        f.write(code)
+
+    try:
+        result = subprocess.run(
+            [sys.executable, code_file],
+            input=test_input,
+            capture_output=True,
+            text=True,
+            timeout=3
+        )
+        output = result.stdout.strip()
+        return jsonify({"output": output})
+    except subprocess.TimeoutExpired:
+        return jsonify({"output": "⏰ 시간 초과"})
+    except Exception as e:
+        return jsonify({"output": f"⚠️ 실행 오류: {str(e)}"})
+    finally:
+        os.remove(code_file)
+
+
+
+@app.route("/submit_code", methods=["POST"])
+def submit_code():
+    data = request.get_json()
+    code = data.get("code", "")
+
+    passed = 0
+    total = len(test_cases)
+    results = []
+
+    for i, (inp, expected) in enumerate(test_cases):
+        # 고유 파일 이름 생성
+        file_id = uuid.uuid4().hex
+        code_file = f"temp_{file_id}.py"
+
+        # 코드 파일 생성
+        with open(code_file, "w", encoding="utf-8") as f:
+            f.write(code)
+
+        try:
+            result = subprocess.run(
+                ["python", code_file],
+                input=inp,
+                capture_output=True,
+                text=True,
+                timeout=3
+            )
+            output = result.stdout.strip()
+            if output == expected:
+                passed += 1
+                results.append(f"✅ TC#{i+1} 통과")
+            else:
+                results.append(f"❌ TC#{i+1} 실패 (예상: {expected}, 실제: {output})")
+
+        except subprocess.TimeoutExpired:
+            results.append(f"⏰ TC#{i+1} 시간 초과")
+        except Exception as e:
+            results.append(f"⚠️ TC#{i+1} 오류 발생: {str(e)}")
+
+        finally:
+            os.remove(code_file)
+
+    summary = f"{passed}/{total}개 테스트케이스 통과\n\n" + "\n".join(results)
+    return jsonify({"result": summary})
+
+
+
 
 
 if __name__ == '__main__':
