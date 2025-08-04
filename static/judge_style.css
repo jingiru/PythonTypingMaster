@@ -3,13 +3,13 @@ body {
   font-family: 'Noto Sans', sans-serif;
   background: linear-gradient(135deg, #6d83f2, #c069ff);
   color: #fff;
-  margin: 0;
-  padding: 30px;
+  margin: 10;
+  padding: 0px;
 }
 
 header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 header h1 {
@@ -19,16 +19,32 @@ header h1 {
 }
 
 main {
+  display: flex;                   /* 추가: 2열 배치 */
+  gap: 30px;                       /* 열 간격 */
+  align-items: flex-start;         /* 위 정렬 */
+  flex-wrap: wrap;                /* 반응형 대응 (작은 화면에서 아래로) */
+
   max-width: 1000px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  padding: 30px;
+  padding-right: 30px;
+  padding-left: 30px;
+  padding-bottom: 30px;
   backdrop-filter: blur(8px);
 }
 
-section {
-  margin-bottom: 40px;
+
+/* 전체 2개 열로 분할 */
+.problem-area {
+  flex: 1;
+  min-width: 420px;
+  margin-bottom: 0; /* 기존 여백 제거 */
+}
+
+.code-area {
+  flex: 1;
+  min-width: 480px;
 }
 
 /* 문제 영역 스타일 */
@@ -69,7 +85,8 @@ section {
 
 .CodeMirror {
   height: auto;
-  min-height: 300px;
+  min-height: 100px;
+  max-height: 200px;
   font-size: 16px;
   line-height: 1.6;
   padding-top: 15px;
@@ -118,7 +135,7 @@ section {
   color: #fff;
   resize: none;
   width: 100%;
-  height: 180px;       /* ✅ 높이 강제 통일 */
+  height: 120px;       /* ✅ 높이 강제 통일 */
   box-sizing: border-box;
 }
 

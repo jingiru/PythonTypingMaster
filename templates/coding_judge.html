@@ -30,17 +30,17 @@
       <div id="problem-title">문제 제목이 여기에 표시됩니다</div>
       <pre id="problem-description">문제 설명이 여기에 표시됩니다</pre>
 
-      <h3>입력 예시</h3>
+      <h2>입력 예시</h2>
       <pre id="input-example">입력 예시</pre>
 
-      <h3>출력 예시</h3>
+      <h2>출력 예시</h2>
       <pre id="output-example">출력 예시</pre>
     </section>
 
     <!-- 코드 입력 -->
     <section class="code-area">
       <h2>👩‍💻 코드 입력</h2>
-      <textarea id="code-input"># 여기에 파이썬 코드를 작성하세요.</textarea>
+      <textarea id="code-input"></textarea>
 
       <!-- 2열 배치: 입력값 - 출력결과 -->
       <div class="io-container">
@@ -48,7 +48,7 @@
         <div class="input-area">
           <h2> 📥 입력값 (테스트용)</h2>
           <div style="display: flex; gap: 10px;">
-            <textarea id="custom-input" rows="6" placeholder="예: 5\n10\n..."></textarea>
+            <textarea id="custom-input" rows="6" placeholder="입력값을 넣어서 테스트 해 보세요"></textarea>
           </div>
         </div>
 
@@ -65,13 +65,15 @@
         <button id="submit-code">코드 제출</button>
         <span id="judge-status" style="display:none;"></span>
       </div>
+
+          <!-- 채점 결과 -->
+      <section class="result-area">
+        <h2>📊 결과</h2>
+        <div id="result-output">결과가 여기에 표시됩니다.</div>
+      </section>
     </section>
 
-    <!-- 채점 결과 -->
-    <section class="result-area">
-      <h2>📊 결과</h2>
-      <div id="result-output">결과가 여기에 표시됩니다.</div>
-    </section>
+
   </main>
 
   <script src="{{ url_for('static', filename='judge_script.js') }}"></script>
