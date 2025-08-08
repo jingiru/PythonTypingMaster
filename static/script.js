@@ -19,7 +19,7 @@ const typingTexts = {
     "lv0": ['1', '2', '3', '4', '5', '10', '99', '3.14', '1.414', '345', '456', '100', 
         'a', 'b', 'c', 'd', 'x', 'y', 'z', 'n', 'n1', 'n2', 'n3', 'lv0', 'Hi', 'Cat', 'Dog', 'dh', 'val',
         'num1', 'num2', 'num3', 'res', 'temp', 'cnt', 'swap', 'print', 'input', 
-        'True', 'False', 'if', 'else', 'for', 'while', 'def', 'len', 'round', 'jingiru', 'donghwa', 'imun',
+        'True', 'False', 'if', 'else', 'for', 'while', 'def', 'len', 'round',
         'a=b', 'b=a', 'a + b', 'a - b', 'a * b', 'a / b', 'a ** b', 'a // b', 'n1+n2'],
 
     "lv1": [
