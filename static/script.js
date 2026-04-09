@@ -502,6 +502,13 @@ typingInput.addEventListener("keydown", async (event) => {
 lvButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         currentLevel = e.target.id; // 현재 난이도 업데이트
+        
+        // 레벨 변경 시 평균/최고 점수만 초기화하고 현재 점수는 유지
+        scoreHistory = [];
+        averageScoreDisplay.textContent = 0;
+        localStorage.removeItem("highScore");
+        highScoreDisplay.textContent = 0;
+
         initializeText(); // 텍스트 초기화
         
         // 버튼의 border 스타일 업데이트
