@@ -8,6 +8,7 @@ import time
 import subprocess
 import uuid
 import pandas as pd
+import psycopg2
 from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
@@ -15,6 +16,29 @@ app = Flask(__name__)
 application = app
 SCORES_FILE = 'scores.csv'
 XLSX_FILE = 'scores.xlsx'
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+
+def get_db_connection():
+    return psycopg2.connect(DATABASE_URL, sslmode="require")
+
+
+def init_db():
+    if not DATABASE_URL:
+        return
+
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS scores (
+                    student_id TEXT PRIMARY KEY,
+                    name TEXT NOT NULL DEFAULT '',
+                    level TEXT,
+                    average_score INTEGER,
+                    high_score INTEGER,
+                    submitted_at TIMESTAMP
+                );
+            """)
 
 def normalize_code(code):
     """코드 정규화: Python 코드의 공백을 일관되게 처리"""
@@ -148,8 +172,6 @@ def compare():
 def typing_test():
     return render_template('exam.html')
 
-SCORES_FILE = 'scores.csv'
-
 @app.route('/submit', methods=['POST'])
 def submit_score():
     data = request.json
@@ -159,8 +181,27 @@ def submit_score():
     average_score = data.get('average_score')
     high_score = data.get('high_score')
     KST = timezone(timedelta(hours=9))
-    now = datetime.now(KST)
+    now = datetime.now(KST).replace(tzinfo=None)
     timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    INSERT INTO scores
+                        (student_id, name, level, average_score, high_score, submitted_at)
+                    VALUES
+                        (%s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (student_id)
+                    DO UPDATE SET
+                        name = EXCLUDED.name,
+                        level = EXCLUDED.level,
+                        average_score = EXCLUDED.average_score,
+                        high_score = EXCLUDED.high_score,
+                        submitted_at = EXCLUDED.submitted_at;
+                """, (student_id, name, level, average_score, high_score, now))
+
+        return jsonify({"status": "success"})
 
     updated = False
     rows = []
@@ -194,6 +235,24 @@ def submit_score():
 
 @app.route('/admin')
 def admin():
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT
+                        student_id,
+                        name,
+                        COALESCE(level, ''),
+                        COALESCE(average_score::text, ''),
+                        COALESCE(high_score::text, ''),
+                        COALESCE(to_char(submitted_at, 'YYYY-MM-DD HH24:MI:SS'), '')
+                    FROM scores
+                    ORDER BY student_id;
+                """)
+                scores = cur.fetchall()
+
+        return render_template('admin.html', scores=scores)
+
     scores = []
     if os.path.exists(SCORES_FILE):
         with open(SCORES_FILE, newline='', encoding='utf-8') as f:
@@ -204,6 +263,31 @@ def admin():
 
 @app.route('/download')
 def download_scores():
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT
+                        student_id AS "학번",
+                        name AS "이름",
+                        COALESCE(level, '') AS "레벨",
+                        average_score AS "평균 점수",
+                        high_score AS "최고 점수",
+                        to_char(submitted_at, 'YYYY-MM-DD HH24:MI:SS') AS "제출 시간"
+                    FROM scores
+                    ORDER BY student_id;
+                """)
+                rows = cur.fetchall()
+                columns = [desc[0] for desc in cur.description]
+
+        if not rows:
+            return "제출된 데이터가 없습니다.", 404
+
+        df = pd.DataFrame(rows, columns=columns)
+        df.to_excel(XLSX_FILE, index=False, sheet_name="수행평가 결과")
+
+        return send_file(XLSX_FILE, as_attachment=True)
+
     if not os.path.exists(SCORES_FILE):
         return "제출된 데이터가 없습니다.", 404
 
@@ -216,6 +300,19 @@ def download_scores():
 
 @app.route('/reset', methods=['POST'])
 def reset_scores():
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    UPDATE scores
+                    SET level = NULL,
+                        average_score = NULL,
+                        high_score = NULL,
+                        submitted_at = NULL;
+                """)
+
+        return redirect(url_for('admin'))
+
     if os.path.exists(SCORES_FILE):
         with open(SCORES_FILE, newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
@@ -234,6 +331,20 @@ def preset_ids():
     data = request.json
     start_id = int(data['start_id'])
     end_id = int(data['end_id'])
+
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                for student_id in range(start_id, end_id + 1):
+                    cur.execute("""
+                        INSERT INTO scores
+                            (student_id, name, level, average_score, high_score, submitted_at)
+                        VALUES
+                            (%s, '', NULL, NULL, NULL, NULL)
+                        ON CONFLICT (student_id) DO NOTHING;
+                    """, (str(student_id),))
+
+        return jsonify({"status": "preset_done"})
 
     new_rows = []
     if os.path.exists(SCORES_FILE):
@@ -257,6 +368,13 @@ def preset_ids():
 
 @app.route('/clear_all', methods=['POST'])
 def clear_all():
+    if DATABASE_URL:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DELETE FROM scores;")
+
+        return jsonify({"status": "cleared_all"})
+
     if os.path.exists(SCORES_FILE):
         os.remove(SCORES_FILE)
     return jsonify({"status": "cleared_all"})
@@ -275,6 +393,8 @@ def start_exam():
 def exam_status():
     return jsonify(exam_info)
 
+
+init_db()
 
 
 if __name__ == '__main__':
