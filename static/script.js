@@ -10,6 +10,327 @@ const currentScoreDisplay = document.getElementById("current-score");
 const averageScoreDisplay = document.getElementById("average-score");
 let scoreHistory = [];
 
+const petStage = document.getElementById("pet-stage");
+const petName = document.getElementById("pet-name");
+const petLevel = document.getElementById("pet-level");
+const petSpeech = document.getElementById("pet-speech");
+const petSummary = document.getElementById("pet-summary");
+const petRequirement = document.getElementById("pet-requirement");
+const petProgressFill = document.getElementById("pet-progress-fill");
+const missionList = document.getElementById("mission-list");
+const petWidget = document.querySelector(".pet-widget");
+const petToggle = document.getElementById("pet-toggle");
+const petToggleText = document.querySelector(".pet-toggle-text");
+
+const PET_STORAGE_KEY = "ptmTypingPetProgress";
+const PET_COLLAPSED_KEY = "ptmTypingPetCollapsed";
+const EASTER_EGGS = [
+    {
+        id: "headband",
+        message: "꽃 머리띠를 발견했어!",
+        patterns: ["flower", "꽃"]
+    },
+    {
+        id: "blush",
+        message: "볼에 연지곤지를 콕 찍었어.",
+        patterns: ["볼살", "볼", "볼콕", "연지곤지"]
+    },
+    {
+        id: "hearts",
+        message: "하트 반짝 효과가 생겼어!",
+        patterns: ["하트", "heart", "사랑해", "사랑"]
+    },
+    {
+        id: "crown",
+        message: "왕관 장식 해금! 귀여움 왕이야.",
+        patterns: ["왕관", "세젤귀", "킹", "퀸"]
+    }
+];
+const PET_LEVELS = {
+    lv0: {
+        row: 0,
+        title: "병아리",
+        names: ["삐약알", "껍질삐약", "아기삐약", "공부삐약", "마스터삐약"],
+        speedGoals: [0, 100, 200, 300, 400],
+        clearGoals: [0, 8, 18, 32, 50],
+        message: "기초 단어를 먹고 자라는 병아리예요.",
+        missions: [
+            { id: "lv0-clear-8", text: "Lv0 정답 8개", target: 8, reward: 40, type: "clear" },
+            { id: "lv0-perfect-5", text: "정확도 100% 5번", target: 5, reward: 45, type: "perfect" },
+            { id: "lv0-speed-100", text: "100 CPM 넘기", target: 100, reward: 55, type: "speed" }
+        ]
+    },
+    lv1: {
+        row: 1,
+        title: "거북이",
+        names: ["거북알", "새싹거북", "느긋거북", "코딩거북", "마스터거북"],
+        speedGoals: [0, 95, 190, 285, 380],
+        clearGoals: [0, 7, 16, 30, 46],
+        message: "천천히 정확하게 가는 거북이예요.",
+        missions: [
+            { id: "lv1-clear-7", text: "Lv1 정답 7개", target: 7, reward: 45, type: "clear" },
+            { id: "lv1-streak-5", text: "연속 정답 5개", target: 5, reward: 50, type: "streak" },
+            { id: "lv1-accuracy-90", text: "정확도 90% 이상 6번", target: 6, reward: 55, type: "accuracy90" }
+        ]
+    },
+    lv2: {
+        row: 2,
+        title: "토끼",
+        names: ["토끼알", "깡총토끼", "빠른토끼", "코딩토끼", "마스터토끼"],
+        speedGoals: [0, 90, 180, 270, 360],
+        clearGoals: [0, 6, 15, 28, 44],
+        message: "속도와 정확도를 같이 챙기는 토끼예요.",
+        missions: [
+            { id: "lv2-clear-6", text: "Lv2 정답 6개", target: 6, reward: 50, type: "clear" },
+            { id: "lv2-speed-180", text: "180 CPM 넘기", target: 180, reward: 60, type: "speed" },
+            { id: "lv2-record-2", text: "개인 최고 기록 2번 갱신", target: 2, reward: 60, type: "record" }
+        ]
+    },
+    lv3: {
+        row: 3,
+        title: "여우",
+        names: ["여우알", "꼬마여우", "영리여우", "코딩여우", "마스터여우"],
+        speedGoals: [0, 80, 160, 240, 320],
+        clearGoals: [0, 6, 14, 26, 40],
+        message: "복잡한 코드를 영리하게 넘는 여우예요.",
+        missions: [
+            { id: "lv3-clear-6", text: "Lv3 정답 6개", target: 6, reward: 55, type: "clear" },
+            { id: "lv3-perfect-4", text: "정확도 100% 4번", target: 4, reward: 65, type: "perfect" },
+            { id: "lv3-streak-4", text: "연속 정답 4개", target: 4, reward: 60, type: "streak" }
+        ]
+    },
+    lv4: {
+        row: 4,
+        title: "드래곤",
+        names: ["용알", "아기용", "불꽃용", "코딩용", "마스터용"],
+        speedGoals: [0, 70, 140, 210, 280],
+        clearGoals: [0, 5, 12, 22, 36],
+        message: "짧고 어려운 코드를 삼키는 드래곤이에요.",
+        missions: [
+            { id: "lv4-clear-5", text: "Lv4 정답 5개", target: 5, reward: 60, type: "clear" },
+            { id: "lv4-speed-210", text: "210 CPM 넘기", target: 210, reward: 75, type: "speed" },
+            { id: "lv4-perfect-3", text: "정확도 100% 3번", target: 3, reward: 70, type: "perfect" }
+        ]
+    }
+};
+
+function todayKey() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function emptyProgress() {
+    return {
+        xp: 0,
+        totalClears: 0,
+        perfectClears: 0,
+        bestSpeed: 0,
+        recordBreaks: 0,
+        streak: 0,
+        accessories: []
+    };
+}
+
+function normalizePetState(saved) {
+    if (saved.levels) return saved;
+
+    const legacyProgress = {
+        xp: saved.xp || 0,
+        totalClears: saved.totalClears || 0,
+        perfectClears: saved.perfectClears || 0,
+        bestSpeed: saved.bestSpeed || 0,
+        recordBreaks: saved.recordBreaks || 0,
+        streak: saved.streak || 0,
+        accessories: saved.accessories || []
+    };
+
+    return {
+        levels: {
+            lv0: legacyProgress,
+            lv1: emptyProgress(),
+            lv2: emptyProgress(),
+            lv3: emptyProgress(),
+            lv4: emptyProgress()
+        }
+    };
+}
+
+function loadPetState() {
+    const saved = JSON.parse(localStorage.getItem(PET_STORAGE_KEY) || "{}");
+    const state = normalizePetState(saved);
+    Object.keys(PET_LEVELS).forEach((level) => {
+        if (!state.levels[level]) state.levels[level] = emptyProgress();
+    });
+    return state;
+}
+
+function savePetState(state) {
+    localStorage.setItem(PET_STORAGE_KEY, JSON.stringify(state));
+}
+
+function getLevelConfig(level = currentLevel) {
+    return PET_LEVELS[level] || PET_LEVELS.lv0;
+}
+
+function getLevelProgress(state, level = currentLevel) {
+    const progress = state.levels[level] || emptyProgress();
+    if (!Array.isArray(progress.accessories)) progress.accessories = [];
+    return progress;
+}
+
+function normalizeCuteInput(value) {
+    return value.trim().toLowerCase().replace(/\s+/g, "");
+}
+
+function getEasterEggMatch(value) {
+    const normalized = normalizeCuteInput(value);
+    return EASTER_EGGS.find((egg) => {
+        return egg.patterns.some((pattern) => normalizeCuteInput(pattern) === normalized);
+    });
+}
+
+function unlockEasterEgg(value) {
+    const egg = getEasterEggMatch(value);
+    if (!egg) return false;
+
+    const state = loadPetState();
+    const progress = getLevelProgress(state, currentLevel);
+    const alreadyUnlocked = progress.accessories.includes(egg.id);
+
+    if (!alreadyUnlocked) {
+        progress.accessories.push(egg.id);
+        state.levels[currentLevel] = progress;
+        savePetState(state);
+    }
+
+    petSpeech.textContent = alreadyUnlocked ? "이미 해금한 귀여움 장식이야." : egg.message;
+    renderPet();
+    petStage.classList.remove("pet-bounce");
+    void petStage.offsetWidth;
+    petStage.classList.add("pet-bounce");
+    typingInput.value = "";
+    startTime = null;
+    return true;
+}
+
+function getStageIndex(progress, config) {
+    let stageIndex = 0;
+    config.speedGoals.forEach((goal, index) => {
+        if (progress.bestSpeed >= goal && progress.totalClears >= config.clearGoals[index]) {
+            stageIndex = index;
+        }
+    });
+    return stageIndex;
+}
+
+function getNextStageRequirement(progress, config) {
+    const stageIndex = getStageIndex(progress, config);
+    const nextStage = Math.min(stageIndex + 1, config.speedGoals.length - 1);
+    if (stageIndex === config.speedGoals.length - 1) {
+        return {
+            done: true,
+            text: "최종 진화 완료!",
+            ratio: 100
+        };
+    }
+
+    const speedGoal = config.speedGoals[nextStage];
+    const clearGoal = config.clearGoals[nextStage];
+    const speedRatio = speedGoal ? progress.bestSpeed / speedGoal : 1;
+    const clearRatio = clearGoal ? progress.totalClears / clearGoal : 1;
+    const ratio = Math.min(100, Math.floor(Math.min(speedRatio, clearRatio) * 100));
+
+    return {
+        done: false,
+        speedGoal,
+        clearGoal,
+        ratio,
+        text: `다음 진화: ${speedGoal} CPM + 정답 ${clearGoal}개`
+    };
+}
+
+function isPetCollapsed() {
+    return localStorage.getItem(PET_COLLAPSED_KEY) === "true";
+}
+
+function applyPetCollapsedState(collapsed) {
+    petWidget.classList.toggle("is-collapsed", collapsed);
+    petToggle.setAttribute("aria-expanded", String(!collapsed));
+    petToggle.setAttribute("aria-label", collapsed ? "알 키우기 화면 펼치기" : "알 키우기 화면 접기");
+    petToggleText.textContent = collapsed ? "펼치기" : "접기";
+}
+
+function togglePetPanel() {
+    const collapsed = !petWidget.classList.contains("is-collapsed");
+    localStorage.setItem(PET_COLLAPSED_KEY, String(collapsed));
+    applyPetCollapsedState(collapsed);
+}
+
+function renderPet() {
+    const state = loadPetState();
+    const progress = getLevelProgress(state, currentLevel);
+    const config = getLevelConfig(currentLevel);
+    const stageIndex = getStageIndex(progress, config);
+    const requirement = getNextStageRequirement(progress, config);
+
+    petStage.dataset.level = currentLevel;
+    petToggle.dataset.level = currentLevel;
+    petStage.dataset.stage = stageIndex;
+    petStage.dataset.accessories = progress.accessories.join(" ");
+    petName.textContent = config.names[stageIndex];
+    petLevel.textContent = `${currentLevel.toUpperCase()} · ${config.title}`;
+    petProgressFill.style.width = `${requirement.ratio}%`;
+    petSummary.textContent = `최고 ${progress.bestSpeed} CPM · 정답 ${progress.totalClears}개 · 진화 ${stageIndex}/4`;
+    petRequirement.textContent = requirement.text;
+    if (!petSpeech.textContent.trim()) petSpeech.textContent = config.message;
+
+    missionList.innerHTML = "";
+    if (requirement.done) {
+        const item = document.createElement("li");
+        item.className = "mission done";
+        item.innerHTML = `
+            <span>모든 진화 완료</span>
+            <strong>완료</strong>
+            <i style="width:100%"></i>
+        `;
+        missionList.appendChild(item);
+        return;
+    }
+
+    [
+        { text: "최고 CPM", value: progress.bestSpeed, target: requirement.speedGoal },
+        { text: "정답 개수", value: progress.totalClears, target: requirement.clearGoal }
+    ].forEach((mission) => {
+        const item = document.createElement("li");
+        const ratio = Math.min(100, Math.round((mission.value / mission.target) * 100));
+        item.className = ratio >= 100 ? "mission done" : "mission";
+        item.innerHTML = `
+            <span>${mission.text}</span>
+            <strong>${Math.min(mission.value, mission.target)}/${mission.target}</strong>
+            <i style="width:${ratio}%"></i>
+        `;
+        missionList.appendChild(item);
+    });
+}
+
+function registerPetResult(speed, accuracy, level, isRecord) {
+    const state = loadPetState();
+    const progress = getLevelProgress(state, level);
+    progress.totalClears += 1;
+    progress.perfectClears += accuracy === 100 ? 1 : 0;
+    progress.streak += 1;
+    progress.bestSpeed = Math.max(progress.bestSpeed, speed);
+    progress.recordBreaks += isRecord ? 1 : 0;
+
+    state.levels[level] = progress;
+    savePetState(state);
+
+    petStage.classList.remove("pet-bounce");
+    void petStage.offsetWidth;
+    petStage.classList.add("pet-bounce");
+    petSpeech.textContent = isRecord ? "새 기록! 날개가 근질근질해!" : "냠! 코드 한 줄 더 먹었어.";
+    renderPet();
+}
+
 
 // 난이도 버튼들
 const lvButtons = document.querySelectorAll(".level-buttons button");
@@ -259,7 +580,11 @@ window.addEventListener("load", () => {
     const lv0Button = document.getElementById("lv0");
     lv0Button.style.border = "2.5px solid #FFD700"; // lv0 버튼에 기본 border 추가
     initializeText(); // 텍스트 초기화
+    applyPetCollapsedState(isPetCollapsed());
+    renderPet();
 });
+
+petToggle.addEventListener("click", togglePetPanel);
 
 
 // 소리 재생 함수
@@ -379,19 +704,23 @@ function updateHighScore(speed) {
         
         // 알림 메시지 표시
         showHighScoreMessage();
+        return true;
     }
+
+    return false;
 }
 
 
 // 정답 처리
-function handleCorrect(speed) {
+function handleCorrect(speed, accuracy) {
     playSound("correct");
     typingInput.style.borderColor = "#4CAF50";
 
     // 현재 점수 표시 (25.05.26 추가)
     currentScoreDisplay.textContent = speed;
 
-    updateHighScore(speed); // 정답 시 최고 기록 갱신
+    const isRecord = updateHighScore(speed); // 정답 시 최고 기록 갱신
+    registerPetResult(speed, accuracy, currentLevel, isRecord);
     setTimeout(() => {
         initializeText();
         typingInput.focus();
@@ -402,6 +731,13 @@ function handleCorrect(speed) {
 function handleIncorrect() {
     playSound("incorrect");
     typingInput.style.borderColor = "#FF4C4C";
+    const state = loadPetState();
+    const progress = getLevelProgress(state, currentLevel);
+    progress.streak = 0;
+    state.levels[currentLevel] = progress;
+    savePetState(state);
+    petSpeech.textContent = "괜찮아, 손가락도 다시 예열하면 돼.";
+    renderPet();
 }
 
 // 실시간 입력 검증
@@ -447,6 +783,12 @@ typingInput.addEventListener("input", async () => {
         return;
     }
 
+    if (unlockEasterEgg(userInput)) {
+        updateStats(0, 0, true);
+        typingInput.style.borderColor = "#ff8fab";
+        return;
+    }
+
 
     
     if (validationTimeout) {
@@ -477,7 +819,7 @@ typingInput.addEventListener("input", async () => {
         
         // 정답 체크
         if (validation.is_correct) {
-            handleCorrect(speed);
+            handleCorrect(speed, validation.accuracy);
         }
     }, 100);
 });
@@ -510,6 +852,8 @@ lvButtons.forEach(button => {
         highScoreDisplay.textContent = 0;
 
         initializeText(); // 텍스트 초기화
+        petSpeech.textContent = getLevelConfig(currentLevel).message;
+        renderPet();
         
         // 버튼의 border 스타일 업데이트
         lvButtons.forEach(btn => btn.style.border = "none"); // 모든 버튼 border 제거

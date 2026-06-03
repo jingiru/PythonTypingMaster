@@ -20,7 +20,14 @@
 </head>
 <body>
   <header>
-    <div class="update-banner">　　(26.04.10 업데이트) 다른 레벨 이동 시 평균과 최고점이 초기화됩니다.　　</div>
+    <div class="update-banner">(26.06.04 업데이트) 캐릭터 미션 기능을 추가하였습니다.</div>
+
+    <div class="survey-link">
+      <a href="https://forms.gle/SZjA2YHQxPrDbDwM6" target="_blank">
+        서비스 만족도 조사
+      </a>
+    </div>
+    
     <h1>Python Typing Master</h1>
   </header>
 
@@ -56,6 +63,38 @@
       </div>
     </section>
   </main>
+  <aside class="pet-widget" aria-label="Typing pet progress">
+    <button class="pet-toggle" id="pet-toggle" type="button" aria-expanded="true" aria-label="알 키우기 화면 접기">
+      <span class="pet-toggle-icon" aria-hidden="true"></span>
+      <span class="pet-toggle-text">접기</span>
+    </button>
+    <div class="pet-speech" id="pet-speech">오늘도 손가락 워밍업!</div>
+    <div class="pet-panel" id="pet-panel">
+      <div class="pet-card">
+        <div class="pet-stage" id="pet-stage" aria-hidden="true">
+          <span class="egg-deco deco-headband"></span>
+          <span class="egg-deco deco-blush"></span>
+          <span class="egg-deco deco-hearts"></span>
+          <span class="egg-deco deco-crown"></span>
+        </div>
+        <div class="pet-info">
+          <div class="pet-header">
+            <span id="pet-name">타자알</span>
+            <span id="pet-level">Lv.0</span>
+          </div>
+          <div class="pet-progress" aria-label="pet experience">
+            <div id="pet-progress-fill"></div>
+          </div>
+          <p id="pet-summary">첫 미션을 기다리는 중</p>
+          <p id="pet-requirement">다음 진화 조건을 준비 중</p>
+        </div>
+      </div>
+      <div class="mission-panel">
+        <div class="mission-title">다음 진화 미션</div>
+        <ul id="mission-list"></ul>
+      </div>
+    </div>
+  </aside>
   <div id="exam-transition" style="display: none; text-align: center;">
     <img src="{{ url_for('static', filename='ptmexam.png') }}" alt="이동 중"
          style="max-width: 500px; margin-top: 20px;">
