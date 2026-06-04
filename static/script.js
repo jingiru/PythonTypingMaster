@@ -21,6 +21,11 @@ const missionList = document.getElementById("mission-list");
 const petWidget = document.querySelector(".pet-widget");
 const petToggle = document.getElementById("pet-toggle");
 const petToggleText = document.querySelector(".pet-toggle-text");
+const examCodeModal = document.getElementById("exam-code-modal");
+const examCodeInput = document.getElementById("exam-code-input");
+const examCodeSubmit = document.getElementById("exam-code-submit");
+const examCodeCancel = document.getElementById("exam-code-cancel");
+const examCodeError = document.getElementById("exam-code-error");
 
 const PET_STORAGE_KEY = "ptmTypingPetProgress";
 const PET_COLLAPSED_KEY = "ptmTypingPetCollapsed";
@@ -618,7 +623,68 @@ function resetHighScore() {
     accuracyDisplay.textContent = `0% (문법O)`;  // 명확하게 초기화
 }
 
+function resetScoreStats() {
+    localStorage.removeItem("highScore");
+    scoreHistory = [];
+    currentScoreDisplay.textContent = 0;
+    averageScoreDisplay.textContent = 0;
+    highScoreDisplay.textContent = 0;
+    speedDisplay.textContent = 0;
+    accuracyDisplay.textContent = `0% (문법O)`;
+}
+
 resetHighScoreButton.addEventListener("click", resetHighScore);
+
+function openExamCodeModal() {
+    examCodeError.textContent = "";
+    examCodeInput.value = "";
+    examCodeModal.classList.add("is-open");
+    examCodeModal.setAttribute("aria-hidden", "false");
+    setTimeout(() => examCodeInput.focus(), 0);
+}
+
+function closeExamCodeModal() {
+    examCodeModal.classList.remove("is-open");
+    examCodeModal.setAttribute("aria-hidden", "true");
+    typingInput.value = "";
+    startTime = null;
+    typingInput.focus();
+}
+
+async function enterExamModeWithCode() {
+    const code = examCodeInput.value.trim();
+
+    if (!/^\d{6}$/.test(code)) {
+        examCodeError.textContent = "6자리 숫자 코드를 입력하세요.";
+        return;
+    }
+
+    examCodeSubmit.disabled = true;
+    examCodeError.textContent = "";
+
+    try {
+        const response = await fetch(`/validate_exam_code/${code}`);
+        if (!response.ok) {
+            examCodeError.textContent = "존재하지 않는 수행평가 코드입니다.";
+            return;
+        }
+
+        window.location.href = `/exam?code=${code}`;
+    } catch (error) {
+        examCodeError.textContent = "코드 확인 중 오류가 발생했습니다.";
+    } finally {
+        examCodeSubmit.disabled = false;
+    }
+}
+
+examCodeSubmit.addEventListener("click", enterExamModeWithCode);
+examCodeCancel.addEventListener("click", closeExamCodeModal);
+examCodeInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        enterExamModeWithCode();
+    }
+});
 
 
 // 연습 텍스트 초기화
@@ -758,28 +824,7 @@ typingInput.addEventListener("input", async () => {
 
     // 🥚 이스터에그: 수행평가 입력 시 전환
     if (userInput.trim() === "수행평가") {
-        // 기존 UI 숨기고 대기화면 보여주기
-        document.querySelector("main").style.display = "none";
-        document.getElementById("exam-transition").style.display = "block";
-
-        // 타자 효과 텍스트
-        const fullText = "수행평가 페이지로 이동 중입니다...";
-        const typingTarget = document.getElementById("typing-effect");
-        let index = 0;
-
-        const typingInterval = setInterval(() => {
-            typingTarget.textContent += fullText[index++];
-            if (index >= fullText.length) {
-                clearInterval(typingInterval);
-            }
-        }, 100); // 글자당 100ms 간격
-
-        // 3초 후 페이지 이동
-        setTimeout(() => {
-            clearInterval(typingInterval); // 혹시 모를 타이밍 정리
-            window.location.href = "/exam";
-        }, 3000);
-
+        openExamCodeModal();
         return;
     }
 
@@ -844,12 +889,7 @@ typingInput.addEventListener("keydown", async (event) => {
 lvButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         currentLevel = e.target.id; // 현재 난이도 업데이트
-        
-        // 레벨 변경 시 평균/최고 점수만 초기화하고 현재 점수는 유지
-        scoreHistory = [];
-        averageScoreDisplay.textContent = 0;
-        localStorage.removeItem("highScore");
-        highScoreDisplay.textContent = 0;
+        resetScoreStats();
 
         initializeText(); // 텍스트 초기화
         petSpeech.textContent = getLevelConfig(currentLevel).message;

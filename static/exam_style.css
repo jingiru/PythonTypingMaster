@@ -81,6 +81,18 @@ main {
   font-size: 1.1rem;
 }
 
+.exam-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
 .student-info input {
   margin-left: 10px;
   margin-right: 20px;

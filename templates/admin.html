@@ -18,15 +18,62 @@
 <body>
   <h1>제출된 수행평가 결과</h1>
 
+  <section class="exam-create">
+    <form action="/admin/exams" method="post">
+      <label>학교: <input type="text" name="school" placeholder="예: 동화고"></label>
+      <label>학급: <input type="text" name="class_name" placeholder="예: 1-2"></label>
+      <button id="create-exam-btn" type="submit">수행평가 코드 발급</button>
+    </form>
+  </section>
+
+  {% if not selected_exam %}
+  <section class="exam-list">
+    <h2>발급된 수행평가 코드</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>코드</th>
+          <th>학교</th>
+          <th>학급</th>
+          <th>발급 시간</th>
+          <th>제출 수</th>
+          <th>결과</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for exam in sessions %}
+        <tr>
+          <td>{{ exam[0] }}</td>
+          <td>{{ exam[1] }}</td>
+          <td>{{ exam[2] }}</td>
+          <td>{{ exam[3] }}</td>
+          <td>{{ exam[4] }}</td>
+          <td><a class="result-link" href="/admin/exams/{{ exam[0] }}">열기</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% else %}
+
+  <div class="exam-summary">
+    <strong>수행평가 코드: {{ selected_exam[0] }}</strong>
+    <span>학교: {{ selected_exam[1] or '-' }}</span>
+    <span>학급: {{ selected_exam[2] or '-' }}</span>
+    <a href="/admin">코드 목록</a>
+  </div>
+
   <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
     <button id="toggle-refresh-btn" style="background-color: gray; color: white; border: none; border-radius: 6px;">
       실시간 보기 OFF
     </button>
     <form action="/download" method="get">
+      <input type="hidden" name="code" value="{{ selected_exam[0] }}">
       <button id="download-btn" type="submit">엑셀 다운로드</button>
     </form>
 
     <form action="/reset" method="post">
+      <input type="hidden" name="code" value="{{ selected_exam[0] }}">
       <button id="reset-btn" type="submit">제출 결과 초기화</button>
     </form>
 
@@ -35,11 +82,6 @@
 
     <button id="preset-btn" onclick="presetIds()">학번 사전 지정</button>
     <button id="clear-btn" onclick="clearAll()">전체 화면 초기화</button>
-    <div style="margin-top: 10px;">
-      <label for="exam-duration">시험 시간 (분): </label>
-      <input type="number" id="exam-duration" step="0.5" value="10" min="0.5" style="width: 80px;">
-      <button id="start-exam-btn">⏱️ 시험 시작 </button>
-    </div>
   </div>
 
   <table>
@@ -66,7 +108,11 @@
       {% endfor %}
     </tbody>
   </table>
+  {% endif %}
 
+  <script>
+    window.EXAM_CODE = "{{ selected_exam[0] if selected_exam else '' }}";
+  </script>
   <script src="{{ url_for('static', filename='admin_script.js') }}"></script>
 </body>
 </html>

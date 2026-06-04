@@ -28,6 +28,35 @@ h1 {
   margin-bottom: 20px;
 }
 
+.exam-create,
+.exam-list,
+.exam-summary {
+  margin-bottom: 20px;
+}
+
+.exam-create form,
+.exam-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.exam-list h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.result-link {
+  color: #1976D2;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.result-link:hover {
+  text-decoration: underline;
+}
+
 button {
   height: 40px;
   padding: 0 16px;
@@ -55,6 +84,15 @@ button {
 
 #reset-btn:hover {
   background-color: #8e24aa;
+}
+
+#create-exam-btn {
+  background-color: #673ab7;
+  color: white;
+}
+
+#create-exam-btn:hover {
+  background-color: #512da8;
 }
 
 
@@ -86,28 +124,4 @@ input[type="text"] {
 
 #clear-btn:hover {
   background-color: #b71c1c;
-}
-
-input[type="number"] {
-  height: 40px;
-  font-size: 1rem;
-  padding: 0px 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-#start-exam-btn {
-  background-color: #ffca28;
-  color: #333;
-  font-weight: bold;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-#start-exam-btn:hover {
-  background-color: #fbc02d;
-  transform: scale(1.05);
 }

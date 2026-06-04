@@ -26,6 +26,7 @@
   <main>
     <!-- 학번과 이름 입력 -->
     <section class="typing-area">
+      <div class="exam-code-badge">수행평가 코드: <strong id="exam-code-label">{{ exam_code or '미입력' }}</strong></div>
       <div class="student-info">
         <label>학번: <input type="text" id="student-id" placeholder="예: 2999"></label>
         <label>이름: <input type="text" id="student-name" placeholder="예: 진기루"></label>
@@ -68,6 +69,7 @@
     // 로그인 데이터 초기화 (다음 단계에서 활용 예정)
     const studentIdInput = document.getElementById("student-id");
     const studentNameInput = document.getElementById("student-name");
+    window.EXAM_CODE = "{{ exam_code }}";
   </script>
 
   <script src="{{ url_for('static', filename='exam_script.js') }}"></script>

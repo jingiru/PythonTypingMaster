@@ -9,6 +9,7 @@ const highScoreMessage = document.getElementById("high-score-message");
 const currentScoreDisplay = document.getElementById("current-score");
 const averageScoreDisplay = document.getElementById("average-score");
 let scoreHistory = [];
+const examCode = window.EXAM_CODE || "";
 
 
 // 난이도 버튼들
@@ -256,6 +257,7 @@ let previousIndex = -1; // 이전에 선택된 인덱스를 저장할 변수
 
 // 페이지 로드 시, 기본 lv0 버튼에 border 추가
 window.addEventListener("load", () => {
+    validateExamCodeOrExit();
     const lv0Button = document.getElementById("lv0");
     lv0Button.style.border = "2.5px solid #FFD700"; // lv0 버튼에 기본 border 추가
     initializeText(); // 텍스트 초기화
@@ -293,7 +295,36 @@ function resetHighScore() {
     accuracyDisplay.textContent = `0% (문법O)`;  // 명확하게 초기화
 }
 
+function resetScoreStats() {
+    localStorage.removeItem("highScore");
+    scoreHistory = [];
+    currentScoreDisplay.textContent = 0;
+    averageScoreDisplay.textContent = 0;
+    highScoreDisplay.textContent = 0;
+    speedDisplay.textContent = 0;
+    accuracyDisplay.textContent = `0% (문법O)`;
+}
+
 resetHighScoreButton.addEventListener("click", resetHighScore);
+
+async function validateExamCodeOrExit() {
+    if (!/^\d{6}$/.test(examCode)) {
+        alert("수행평가 코드가 필요합니다.");
+        window.location.href = "/";
+        return;
+    }
+
+    try {
+        const response = await fetch(`/validate_exam_code/${examCode}`);
+        if (!response.ok) {
+            alert("존재하지 않는 수행평가 코드입니다.");
+            window.location.href = "/";
+        }
+    } catch (error) {
+        alert("수행평가 코드를 확인할 수 없습니다.");
+        window.location.href = "/";
+    }
+}
 
 
 // 연습 텍스트 초기화
@@ -473,6 +504,7 @@ typingInput.addEventListener("keydown", async (event) => {
 lvButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         currentLevel = e.target.id; // 현재 난이도 업데이트
+        resetScoreStats();
         initializeText(); // 텍스트 초기화
         
         // 버튼의 border 스타일 업데이트
@@ -523,6 +555,11 @@ submitButton.addEventListener("click", async () => {
     const averageScore = parseInt(document.getElementById("average-score").textContent);
     const currentLevelShort = currentLevel; 
 
+    if (!/^\d{6}$/.test(examCode)) {
+        alert("수행평가 코드가 필요합니다.");
+        return;
+    }
+
     if (!studentId || !studentName) {
         alert("학번과 이름을 모두 입력해 주세요.");
         return;
@@ -533,6 +570,7 @@ submitButton.addEventListener("click", async () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
+                exam_code: examCode,
                 student_id: studentId,
                 name: studentName,
                 level: currentLevelShort, 
@@ -562,59 +600,6 @@ submitButton.addEventListener("click", async () => {
         submitStatus.textContent = "제출 오류!";
     }
 });
-
-
-let examStarted = false;
-let examEndTime = null;
-const countdownElement = document.createElement("div");
-countdownElement.style.fontSize = "1.4rem";
-countdownElement.style.fontWeight = "bold";
-document.querySelector(".stats-container").prepend(countdownElement);
-
-// 매초 서버 확인
-setInterval(async () => {
-  if (examStarted) return;
-
-  const res = await fetch("/exam_status");
-  const data = await res.json();
-
-  if (data.start_time) {
-    const now = Math.floor(Date.now() / 1000);
-    const end = data.start_time + data.duration;
-    examEndTime = end;
-    examStarted = true;
-    isSubmitted = false; // 시험이 시작되면 제출 여부 초기화
-    startCountdown();  // 타이머 시작
-  }
-}, 1000);
-
-function startCountdown() {
-  const interval = setInterval(() => {
-    const now = Math.floor(Date.now() / 1000);
-    const remaining = examEndTime - now;
-
-    if (remaining <= 0) {
-      clearInterval(interval);
-      autoSubmit();
-      return;
-    }
-
-    const min = Math.floor(remaining / 60);
-    const sec = remaining % 60;
-    countdownElement.textContent = `남은 시간: ${min}:${sec.toString().padStart(2, "0")}`;
-  }, 1000);
-}
-
-function autoSubmit() {
-  if (isSubmitted) {
-    console.log("이미 제출했으므로 자동 제출 생략");
-    return;
-  }
-
-  console.log("⏰ 시간 종료! 자동 제출 실행");
-  document.getElementById("submit-score").click();
-  isSubmitted = false;
-}
 
 
 
