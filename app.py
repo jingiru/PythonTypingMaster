@@ -580,7 +580,7 @@ def reset_scores():
                     SET level = NULL,
                         average_score = NULL,
                         high_score = NULL,
-                        submitted_at = NULL;
+                        submitted_at = NULL
                     WHERE exam_code = %s;
                 """, (exam_code,))
 
