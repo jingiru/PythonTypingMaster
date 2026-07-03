@@ -16,7 +16,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='admin_style.css') }}">
 </head>
 <body>
-  <h1>제출된 수행평가 결과</h1>
+  <div class="admin-header">
+    <h1>제출된 수행평가 결과</h1>
+    <form action="/admin/logout" method="post">
+      <button id="logout-btn" type="submit">로그아웃</button>
+    </form>
+  </div>
 
   <section class="exam-create">
     <form action="/admin/exams" method="post">

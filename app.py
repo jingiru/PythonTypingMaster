@@ -7,16 +7,20 @@ import csv
 import random
 import subprocess
 import uuid
+import secrets
 import pandas as pd
 import psycopg2
 from datetime import datetime, timedelta, timezone
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
 
 application = app
 SCORES_FILE = 'scores.csv'
 XLSX_FILE = 'scores.xlsx'
 DATABASE_URL = os.environ.get("DATABASE_URL")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
 
 
 def get_db_connection():
@@ -72,6 +76,49 @@ def init_db():
 
 def is_valid_exam_code_format(code):
     return bool(re.fullmatch(r"\d{6}", code or ""))
+
+
+def admin_login_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if session.get("admin_logged_in"):
+            return view(*args, **kwargs)
+
+        if request.path in ("/preset_ids", "/clear_all"):
+            return jsonify({"status": "error", "message": "관리자 로그인이 필요합니다."}), 401
+
+        return redirect(url_for('admin_login', next=request.full_path))
+
+    return wrapped_view
+
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if session.get("admin_logged_in"):
+        return redirect(url_for('admin'))
+
+    next_url = request.args.get("next") or request.form.get("next") or url_for('admin')
+    if not next_url.startswith("/"):
+        next_url = url_for('admin')
+
+    error = ""
+    if request.method == 'POST':
+        password = request.form.get("password", "")
+        if not ADMIN_PASSWORD:
+            error = "관리자 비밀번호 환경변수가 설정되지 않았습니다."
+        elif secrets.compare_digest(password, ADMIN_PASSWORD):
+            session["admin_logged_in"] = True
+            return redirect(next_url)
+        else:
+            error = "비밀번호가 올바르지 않습니다."
+
+    return render_template('admin_login.html', error=error, next_url=next_url)
+
+
+@app.route('/admin/logout', methods=['POST'])
+def admin_logout():
+    session.pop("admin_logged_in", None)
+    return redirect(url_for('admin_login'))
 
 
 def make_download_filename(exam):
@@ -392,6 +439,7 @@ def submit_score():
 # --- admin 영역 --- #
 
 @app.route('/admin')
+@admin_login_required
 def admin():
     if DATABASE_URL:
         with get_db_connection() as conn:
@@ -425,6 +473,7 @@ def admin():
 
 
 @app.route('/admin/exams', methods=['POST'])
+@admin_login_required
 def create_exam():
     school = request.form.get("school", "").strip()
     class_name = request.form.get("class_name", "").strip()
@@ -446,6 +495,7 @@ def create_exam():
 
 
 @app.route('/admin/exams/<exam_code>')
+@admin_login_required
 def admin_exam(exam_code):
     if not is_valid_exam_code_format(exam_code):
         return redirect(url_for('admin'))
@@ -502,6 +552,7 @@ def admin_exam(exam_code):
 
 
 @app.route('/download')
+@admin_login_required
 def download_scores():
     exam_code = request.args.get("code", "").strip()
     if not is_valid_exam_code_format(exam_code):
@@ -567,6 +618,7 @@ def download_scores():
 
 
 @app.route('/reset', methods=['POST'])
+@admin_login_required
 def reset_scores():
     exam_code = request.form.get("code", "").strip()
     if not is_valid_exam_code_format(exam_code):
@@ -606,6 +658,7 @@ def reset_scores():
 
 
 @app.route('/preset_ids', methods=['POST'])
+@admin_login_required
 def preset_ids():
     data = request.json
     exam_code = data.get('exam_code', '').strip()
@@ -656,6 +709,7 @@ def preset_ids():
 
 
 @app.route('/clear_all', methods=['POST'])
+@admin_login_required
 def clear_all():
     data = request.get_json(silent=True) or {}
     exam_code = data.get("exam_code", "").strip()

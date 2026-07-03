@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 로그인</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin_style.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-panel">
+    <h1>관리자 로그인</h1>
+    <form action="/admin/login" method="post">
+      <input type="hidden" name="next" value="{{ next_url }}">
+      <label for="admin-password">비밀번호</label>
+      <input id="admin-password" type="password" name="password" autocomplete="current-password" autofocus>
+      {% if error %}
+      <p class="login-error">{{ error }}</p>
+      {% endif %}
+      <button id="login-btn" type="submit">로그인</button>
+    </form>
+  </main>
+</body>
+</html>
