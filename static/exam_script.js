@@ -344,14 +344,14 @@ function initializeText() {
 }
 
 // 통계 업데이트 함수
-function updateStats(speed, accuracy, isSyntaxValid) {
+function updateStats(speed, accuracy, isSyntaxValid, isCorrect = false) {
     // 기존 표시
     speedDisplay.textContent = speed;
     accuracyDisplay.textContent = `${accuracy}% (문법${isSyntaxValid ? 'O' : ' 오류O'})`;
 
 
     // 평균 점수 표시 (25.05.26 추가)
-    if (speed > 0 && accuracy === 100 && isSyntaxValid) {
+    if (speed > 0 && accuracy === 100 && isSyntaxValid && isCorrect) {
         scoreHistory.push(speed);
     }
 
@@ -475,7 +475,7 @@ typingInput.addEventListener("input", async () => {
 
         const speed = Math.round((charactersTyped / elapsedTime) * speedFactor);
         
-        updateStats(speed, validation.accuracy, validation.is_syntax_valid);
+        updateStats(speed, validation.accuracy, validation.is_syntax_valid, validation.is_correct);
         
         // 정답 체크
         if (validation.is_correct) {

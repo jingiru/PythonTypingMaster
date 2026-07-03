@@ -8,6 +8,8 @@ import random
 import subprocess
 import uuid
 import secrets
+import io
+import tokenize
 import pandas as pd
 import psycopg2
 from datetime import datetime, timedelta, timezone
@@ -199,32 +201,21 @@ def local_score_row(row):
     return row
 
 def normalize_code(code):
-    """코드 정규화: Python 코드의 공백을 일관되게 처리"""
-    # 1. 여러 공백을 하나로 통일
-    code = ' '.join(code.split())
-    
-    # 2. 연산자 주변 공백 정규화
-    code = re.sub(r'\s*([<>+=\-*/])\s*', r'\1', code)
-    
-    # 3. 괄호 주변 공백 제거
-    code = re.sub(r'\s*\(\s*', '(', code)  # 여는 괄호
-    code = re.sub(r'\s*\)\s*', ')', code)  # 닫는 괄호
-    
-    # 4. 쉼표 다음에만 공백 유지
-    code = re.sub(r'\s*,\s*', ', ', code)
-    
-    # 5. 콜론 앞뒤의 공백 제거 (release 250118 11:25)
-    code = re.sub(r'\s*:\s*', ':', code)
-    
-    # 6. 대괄호 주변 공백 제거
-    code = re.sub(r'\s*\[\s*', '[', code)
-    code = re.sub(r'\s*\]\s*', ']', code)
-    
-    # 7. 중괄호 주변 공백 제거
-    code = re.sub(r'\s*{\s*', '{', code)
-    code = re.sub(r'\s*}\s*', '}', code)
-    
-    return code
+    """문법상 의미 없는 공백만 제거하고 문자열 안의 공백은 보존합니다."""
+    ignored_tokens = {
+        tokenize.ENCODING,
+        tokenize.NL,
+        tokenize.NEWLINE,
+        tokenize.INDENT,
+        tokenize.DEDENT,
+        tokenize.ENDMARKER,
+    }
+
+    try:
+        tokens = tokenize.generate_tokens(io.StringIO(code).readline)
+        return ''.join(token.string for token in tokens if token.type not in ignored_tokens)
+    except tokenize.TokenError:
+        return ''.join(code.split())
 
 def is_valid_python_syntax(code):
     """Python 코드의 문법이 유효한지 검사"""
@@ -271,11 +262,13 @@ def is_valid_python_syntax(code):
 
 def calculate_char_accuracy(user_input, correct_code):
     """문자 단위 정확도 계산"""
-    # 공백을 제거한 상태로 비교
-    user_chars = list(user_input.replace(' ', ''))
-    correct_chars = list(correct_code.replace(' ', ''))
+    user_chars = list(normalize_code(user_input))
+    correct_chars = list(normalize_code(correct_code))
     correct_count = 0
     total_length = len(correct_chars)
+
+    if total_length == 0:
+        return 100 if not user_chars else 0
     
     for i in range(min(len(user_chars), len(correct_chars))):
         if user_chars[i] == correct_chars[i]:
